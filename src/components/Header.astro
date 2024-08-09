@@ -1,0 +1,38 @@
+---
+import { ModeToggle } from "@/components/ModeToggle";
+import { ComboboxDemo } from "@/components/ComboboxDemo";
+---
+
+<script is:inline>
+  const getThemePreference = () => {
+    if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+      return localStorage.getItem("theme");
+    }
+    return window.matchMedia("(prefers-color-scheme: dark)").matches
+      ? "dark"
+      : "light";
+  };
+  const isDark = getThemePreference() === "dark";
+  document.documentElement.classList[isDark ? "add" : "remove"]("dark");
+
+  if (typeof localStorage !== "undefined") {
+    const observer = new MutationObserver(() => {
+      const isDark = document.documentElement.classList.contains("dark");
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+  }
+</script>
+
+<header class="container h-62 py-2 flex align-middle justify-between">
+  <div class="flex items-center">
+    <p class="font-sans font-extrabold text-xl self-baseline">
+      Paṭisambhida LAB
+    </p>
+    <ComboboxDemo client:load />
+  </div>
+  <ModeToggle client:load />
+</header>

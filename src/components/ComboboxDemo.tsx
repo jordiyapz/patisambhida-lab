@@ -47,7 +47,7 @@ export function ComboboxDemo() {
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Search framework..." />
+          <CommandInput placeholder="Search modules..." />
           <CommandList>
             <CommandEmpty>No modules found.</CommandEmpty>
             <CommandGroup>

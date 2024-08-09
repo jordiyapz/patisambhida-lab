@@ -1,7 +1,11 @@
 ---
 import Layout from "@/layouts/Layout.astro";
+import PaliTranslation from "@/components/pali-translation/PaliTranslation";
 ---
 
 <Layout title="Pali Translation">
-  <p>hello pali</p>
+  <h2 class="text-xl font-bold">Paḷi Translation</h2>
+  <div class="mt-2">
+    <PaliTranslation client:load />
+  </div>
 </Layout>
