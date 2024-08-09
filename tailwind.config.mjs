@@ -1,4 +1,6 @@
+import defaultTheme from "tailwindcss/defaultTheme";
 /** @type {import('tailwindcss').Config} */
+
 export default {
   darkMode: ["class"],
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
@@ -66,7 +68,10 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      fontFamily: {
+        sans: ['"Noto Sans Variable"', ...defaultTheme.fontFamily.sans],
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
-}
+};
