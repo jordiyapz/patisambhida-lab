@@ -1,19 +1,19 @@
-"use clien";
+"use client";
 
 import { useMemo, useState } from "react";
 import { Textarea } from "../ui/textarea";
 import { Edit } from "lucide-react";
 import { Button } from "../ui/button";
-import { Label } from "../ui/label";
 import clsx from "clsx";
+import { usePaliStore } from "@/lib/pali-store";
 
-type Props = { className: string; onSearch(text: string): void };
+type Props = { className: string };
 
-const initialText = `domanassasahagataṃ paṭighasampayuttaṃ asaṅkhārikamekaṃ, sasaṅkhārikamekanti imāni dvepi paṭighasampayuttacittāni nāma.
-upekkhāsahagataṃ vicikicchāsampayuttamekaṃ, upekkhāsahagataṃ uddhaccasampayuttamekanti imāni dvepi momūhacittāni nāma.`;
-function PaliEditor({ className, onSearch: setSearch }: Props) {
-  const [rawText, setRawText] = useState(initialText);
+function PaliEditor({ className }: Props) {
   const [isEditing, setIsEditing] = useState(false);
+  const setSearch = usePaliStore((state) => state.setSearch);
+  const rawText = usePaliStore((s) => s.transcript);
+  const setRawText = usePaliStore((s) => s.setTranscript);
 
   const lines = useMemo(() => {
     return rawText.split("\n").map((x) => x.split(" "));
@@ -70,9 +70,10 @@ function PaliEditor({ className, onSearch: setSearch }: Props) {
       ) : (
         <div className="py-6 px-3 text-md max-w-full">
           {lines.map((tokens) => (
-            <div className="flex max-w-full flex-wrap gap-1">
+            <div key={tokens[0]} className="flex max-w-full flex-wrap gap-1">
               {tokens.map((word) => (
                 <span
+                  key={word}
                   className="block h-14 cursor-pointer hover:text-green-400"
                   onClick={(e) => {
                     setSearch(e.currentTarget.innerText);

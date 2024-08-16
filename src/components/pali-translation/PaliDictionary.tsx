@@ -1,23 +1,18 @@
 import clsx from "clsx";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { usePaliStore } from "@/lib/pali-store";
 
 type Props = {
   className: string;
-  search: string;
-  onSearchChange?(text: string): void;
 };
 
-function PaliDictionary({
-  search: initialSearch,
-  onSearchChange,
-  ...props
-}: Props) {
-  console.debug(initialSearch)
-  const [search, setSearch] = useState(() => initialSearch);
+function PaliDictionary({ ...props }: Props) {
   const [loading, setLoading] = useState(true);
+  const search = usePaliStore((state) => state.search);
+  const setSearch = usePaliStore((state) => state.setSearch);
 
   return (
     <div {...props} className={clsx("flex flex-col gap-2", props.className)}>
@@ -25,7 +20,7 @@ function PaliDictionary({
         className="flex w-full items-center space-x-2"
         onSubmit={(e) => {
           e.preventDefault();
-          onSearchChange?.(search);
+          setSearch(search);
           setLoading(true);
         }}
       >

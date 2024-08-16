@@ -32,6 +32,9 @@ dependencies:
   '@radix-ui/react-slot':
     specifier: ^1.1.0
     version: 1.1.0(@types/react@18.3.3)(react@18.3.1)
+  '@tanstack/react-query':
+    specifier: ^5.51.23
+    version: 5.51.23(react@18.3.1)
   '@types/react':
     specifier: ^18.3.3
     version: 18.3.3
@@ -71,6 +74,9 @@ dependencies:
   typescript:
     specifier: ^5.5.4
     version: 5.5.4
+  zustand:
+    specifier: ^4.5.5
+    version: 4.5.5(@types/react@18.3.3)(react@18.3.1)
 
 packages:
 
@@ -1942,6 +1948,19 @@ packages:
     resolution: {integrity: sha512-biCz/mnkMktImI6hMfMX3H9kOeqsInxWEyCHbSlL8C/2TR1FqfmGxTLRNwYCKsyCyxWLbB8rEqXRVZuyxuLFmA==}
     dependencies:
       '@types/hast': 3.0.4
+    dev: false
+
+  /@tanstack/query-core@5.51.21:
+    resolution: {integrity: sha512-POQxm42IUp6n89kKWF4IZi18v3fxQWFRolvBA6phNVmA8psdfB1MvDnGacCJdS+EOX12w/CyHM62z//rHmYmvw==}
+    dev: false
+
+  /@tanstack/react-query@5.51.23(react@18.3.1):
+    resolution: {integrity: sha512-CfJCfX45nnVIZjQBRYYtvVMIsGgWLKLYC4xcUiYEey671n1alvTZoCBaU9B85O8mF/tx9LPyrI04A6Bs2THv4A==}
+    peerDependencies:
+      react: ^18.0.0
+    dependencies:
+      '@tanstack/query-core': 5.51.21
+      react: 18.3.1
     dev: false
 
   /@types/babel__core@7.20.5:
@@ -4776,6 +4795,14 @@ packages:
       tslib: 2.6.3
     dev: false
 
+  /use-sync-external-store@1.2.2(react@18.3.1):
+    resolution: {integrity: sha512-PElTlVMwpblvbNqQ82d2n6RjStvdSoNe9FG28kNfz3WiXilJm4DdNkEzRhCZuIDwY8U08WVihhGR5iRqAwfDiw==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      react: 18.3.1
+    dev: false
+
   /util-deprecate@1.0.2:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
     dev: false
@@ -5092,6 +5119,26 @@ packages:
 
   /zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
+    dev: false
+
+  /zustand@4.5.5(@types/react@18.3.3)(react@18.3.1):
+    resolution: {integrity: sha512-+0PALYNJNgK6hldkgDq2vLrw5f6g/jCInz52n9RTpropGgeAf/ioFUCdtsjCqu4gNhW9D01rUQBROoRjdzyn2Q==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      '@types/react': '>=16.8'
+      immer: '>=9.0.6'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      '@types/react': 18.3.3
+      react: 18.3.1
+      use-sync-external-store: 1.2.2(react@18.3.1)
     dev: false
 
   /zwitch@2.0.4:
