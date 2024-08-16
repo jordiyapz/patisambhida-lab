@@ -12,12 +12,12 @@ type Props = { className: string };
 function PaliEditor({ className }: Props) {
   const [isEditing, setIsEditing] = useState(false);
   const setSearch = usePaliStore((state) => state.setSearch);
-  const rawText = usePaliStore((s) => s.transcript);
-  const setRawText = usePaliStore((s) => s.setTranscript);
+  const transcript = usePaliStore((s) => s.transcript);
+  const setTranscript = usePaliStore((s) => s.setTranscript);
 
   const lines = useMemo(() => {
-    return rawText.split("\n").map((x) => x.split(" "));
-  }, [rawText]);
+    return transcript.split("\n").map((x) => x.split(" "));
+  }, [transcript]);
 
   const handleKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = (
     event
@@ -61,22 +61,27 @@ function PaliEditor({ className }: Props) {
           id="pali-editor"
           className="flex-grow text-md leading-[3.5rem]"
           placeholder="Write pali script here..."
-          value={rawText}
+          value={transcript}
           onKeyDown={handleKeyDown}
           onChange={(e) => {
-            setRawText(e.target.value);
+            setTranscript(e.target.value);
           }}
         />
       ) : (
         <div className="py-6 px-3 text-md max-w-full">
           {lines.map((tokens, i) => (
             <div key={i} className="flex max-w-full flex-wrap gap-1">
-              {tokens.map((word) => (
+              {tokens.map((word, i) => (
                 <span
-                  key={word}
+                  key={word+i}
                   className="block h-14 cursor-pointer hover:text-green-400"
                   onClick={(e) => {
-                    setSearch(e.currentTarget.innerText);
+                    setSearch(
+                      e.currentTarget.innerText.replaceAll(
+                        /[\u104a\u104b\u2018\u2019",\.\?]/g,
+                        ""
+                      )
+                    );
                   }}
                 >
                   {word}
