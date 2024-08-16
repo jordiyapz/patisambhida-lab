@@ -1,9 +1,9 @@
 import clsx from "clsx";
-import { Input } from "../ui/input";
-import { Button } from "../ui/button";
+import { Input } from "../../../components/ui/input";
+import { Button } from "../../../components/ui/button";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { usePaliStore } from "@/lib/pali-store";
+import { usePaliStore } from "@/modules/pali-translation/pali-store";
 
 type Props = {
   className: string;

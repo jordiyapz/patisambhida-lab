@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Textarea } from "../ui/textarea";
 import { Edit } from "lucide-react";
-import { Button } from "../ui/button";
 import clsx from "clsx";
-import { usePaliStore } from "@/lib/pali-store";
+import { usePaliStore } from "@/modules/pali-translation/pali-store";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 type Props = { className: string };
 
