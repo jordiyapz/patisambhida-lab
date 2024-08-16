@@ -67,3 +67,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+.grammar_dict {
+  font-family: "sans";
+  border-collapse: collapse;
+  border-radius: 5px;
+  line-height: 150%;
+  overflow: auto;
+  margin: 2px;
+  text-align: center;
+  flex-grow: 1;
+}
+.grammar_dict thead {
+  border-bottom: 1px solid slategray;
+  text-transform: capitalize;
+}
+
+.grammar_dict * {
+  border-color: inherit;
+}

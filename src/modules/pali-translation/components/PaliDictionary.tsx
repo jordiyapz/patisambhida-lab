@@ -1,18 +1,26 @@
 import clsx from "clsx";
-import { Input } from "../../../components/ui/input";
-import { Button } from "../../../components/ui/button";
-import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { usePaliStore } from "@/modules/pali-translation/pali-store";
+import { usePaliStore } from "@/modules/pali-translation/lib/pali-store";
+import { useQuery } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { fetchDPDict } from "../lib/services";
+import { Separator } from "@/components/ui/separator";
 
 type Props = {
   className: string;
 };
 
 function PaliDictionary({ ...props }: Props) {
-  const [loading, setLoading] = useState(true);
+  // const [loading, setLoading] = useState(true);
   const search = usePaliStore((state) => state.search);
   const setSearch = usePaliStore((state) => state.setSearch);
+
+  const { status, data, error, isLoading } = useQuery({
+    queryKey: ["dict-search", { q: search }],
+    queryFn: () => fetchDPDict(search),
+    enabled: search !== "",
+  });
 
   return (
     <div {...props} className={clsx("flex flex-col gap-2", props.className)}>
@@ -21,7 +29,6 @@ function PaliDictionary({ ...props }: Props) {
         onSubmit={(e) => {
           e.preventDefault();
           setSearch(search);
-          setLoading(true);
         }}
       >
         <Input
@@ -30,7 +37,7 @@ function PaliDictionary({ ...props }: Props) {
           onChange={(e) => setSearch(e.target.value)}
         />
         <Button type="submit">
-          {loading ? (
+          {isLoading ? (
             <>
               <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Searching...
             </>
@@ -39,15 +46,26 @@ function PaliDictionary({ ...props }: Props) {
           )}
         </Button>
       </form>
-      <iframe
-        className="border border-slate-800 w-full rounded-md flex-grow"
-        src={`https://corsmirror.onrender.com/v1/cors?url=${encodeURIComponent(
-          `https://www.dpdict.net/gd?search=${encodeURI(search)}`
-        )}`}
-        onLoad={() => {
-          setLoading(false);
-        }}
-      />
+      <div className="border border-slate-800 w-full rounded-md flex-grow max-h-lvh">
+        <div className="px-4 py-2 font-bold bg-slate-900 rounded-t-md">
+          Digital Pāḷi Dictionary
+        </div>
+        <Separator />
+        <div
+          className="px-4 py-2 overflow-y-auto flex flex-col justify-stretch"
+          dangerouslySetInnerHTML={{
+            __html:
+              status === "pending"
+                ? `<div class='mt-5 text-center'>${
+                    isLoading ? "Loading..." : "No data"
+                  }</div>`
+                : status === "error"
+                ? `<pre>${error?.message}</pre>`
+                : data.grammarDict?.innerHTML ??
+                  data.dom.innerHTML,
+          }}
+        ></div>
+      </div>
     </div>
   );
 }

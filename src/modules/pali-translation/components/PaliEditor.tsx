@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { Edit } from "lucide-react";
 import clsx from "clsx";
-import { usePaliStore } from "@/modules/pali-translation/pali-store";
+import { usePaliStore } from "@/modules/pali-translation/lib/pali-store";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -69,8 +69,8 @@ function PaliEditor({ className }: Props) {
         />
       ) : (
         <div className="py-6 px-3 text-md max-w-full">
-          {lines.map((tokens) => (
-            <div key={tokens[0]} className="flex max-w-full flex-wrap gap-1">
+          {lines.map((tokens, i) => (
+            <div key={i} className="flex max-w-full flex-wrap gap-1">
               {tokens.map((word) => (
                 <span
                   key={word}
