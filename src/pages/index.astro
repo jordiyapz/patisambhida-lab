@@ -1,7 +1,12 @@
 ---
-import Layout from "../layouts/Layout.astro"
+import { Button } from "@/components/ui/button";
+import Layout from "../layouts/Layout.astro";
 ---
 
 <Layout title="Home">
-  Welcome to the LAB.
+  <div class="flex flex-col max-w-xs">
+    Welcome to the LAB.
+    <a href="/pali"><Button variant="link">Go to pali translate tool</Button></a
+    >
+  </div>
 </Layout>

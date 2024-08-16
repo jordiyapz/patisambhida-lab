@@ -1,6 +1,9 @@
 ---
 import { ModeToggle } from "@/components/ModeToggle";
 import { ComboboxDemo } from "@/components/ComboboxDemo";
+const features = {
+  moduleSelection: false,
+};
 ---
 
 <script is:inline>
@@ -32,7 +35,7 @@ import { ComboboxDemo } from "@/components/ComboboxDemo";
     <p class="font-sans font-extrabold text-xl self-baseline">
       Paṭisambhida LAB
     </p>
-    <ComboboxDemo client:load />
+    {features.moduleSelection && <ComboboxDemo client:load />}
   </div>
   <ModeToggle client:load />
 </header>
