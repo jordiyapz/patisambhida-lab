@@ -12,7 +12,6 @@ type Props = {
 };
 
 function PaliDictionary({ ...props }: Props) {
-  // const [loading, setLoading] = useState(true);
   const search = usePaliStore((state) => state.search);
   const setSearch = usePaliStore((state) => state.setSearch);
 
@@ -46,13 +45,13 @@ function PaliDictionary({ ...props }: Props) {
           )}
         </Button>
       </form>
-      <div className="border border-slate-800 w-full rounded-md flex-grow max-h-lvh">
+      <div className="border border-slate-800 w-full rounded-md flex-grow ">
         <div className="px-4 py-2 font-bold bg-slate-900 rounded-t-md">
           Digital Pāḷi Dictionary
         </div>
         <Separator />
         <div
-          className="px-4 py-2 overflow-y-auto flex flex-col justify-stretch"
+          className="px-4 py-2 flex flex-col justify-stretch"
           dangerouslySetInnerHTML={{
             __html:
               status === "pending"
