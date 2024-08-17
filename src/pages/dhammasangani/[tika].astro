@@ -1,0 +1,25 @@
+---
+import { getCollection, getEntry } from "astro:content";
+import { capitalize } from "@/lib/utils";
+import DhsLayout from "@/modules/dhammasangani/components/DhsLayout.astro";
+import { type TikaEntry } from "@/modules/dhammasangani/lib/types";
+import reader from "@/modules/dhammasangani/lib/reader";
+
+export async function getStaticPaths() {
+  const slugs = await reader.collections.tika.list();
+  return slugs.map((slug) => ({
+    params: { tika: slug },
+  }));
+}
+
+const { tika: slug } = Astro.params;
+const tika = await getEntry("tika", slug);
+const { Content } = await tika.render();
+---
+
+<DhsLayout title={capitalize(tika.data.title)}>
+  <div class="container">
+    <div class="text-lg font-bold my-2">{tika.data.title}</div>
+    <Content />
+  </div>
+</DhsLayout>

@@ -1,0 +1,41 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { Separator } from "@/components/ui/separator";
+import reader from "../lib/reader";
+
+interface Props {
+  title?: string;
+}
+
+const { title } = Astro.props;
+const tikaCollection = await reader.collections.tika.all();
+---
+
+<Layout title={title ?? "Dhammasangani"}>
+  <div class="flex flex-row">
+    <section class="bg-slate-900 w-1/5 float-left fixed h-full overflow-auto">
+      <p class="my-4 text-xl mx-4">Dhammasangani</p>
+      <Separator />
+      <div class="mx-4">
+        <p class="font-semibold mt-4">Tika</p>
+        <ul>
+          {
+            tikaCollection.map((tika) => (
+              <li>
+                <a
+                  class="min-h-8 flex items-center hover:bg-slate-800 px-2"
+                  href={`/dhammasangani/${tika.slug}`}
+                >
+                  {tika.slug}. {tika.entry.title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </section>
+    <article class="ml-[20%]">
+      <slot />
+    </article>
+  </div>
+</Layout>
