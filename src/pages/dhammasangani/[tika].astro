@@ -13,13 +13,30 @@ export async function getStaticPaths() {
 }
 
 const { tika: slug } = Astro.params;
-const tika = await getEntry("tika", slug);
-const { Content } = await tika.render();
+const entry = await getEntry("tika", slug);
+const tika = await reader.collections.tika.read(slug);
+
+const { Content } = await entry.render();
 ---
 
-<DhsLayout title={capitalize(tika.data.title)}>
+<DhsLayout title={capitalize(entry.data.title)}>
   <div class="container">
-    <div class="text-lg font-bold my-2">{tika.data.title}</div>
+    <div class="text-lg font-bold my-2">{entry.data.title}</div>
+    <p class="font-semibold mt-2">Sentences</p>
+    <ul>
+      {tika?.sentences.map((sentence) => <li>{sentence}</li>)}
+    </ul>
+    <p class="font-semibold mt-2">Components</p>
+    <ul>
+      {
+        tika?.components.map((c) => (
+          <li>
+            {c.discriminant}: {c.value}
+          </li>
+        ))
+      }
+    </ul>
+    <p class="font-semibold mt-2">Content</p>
     <Content />
   </div>
 </DhsLayout>
