@@ -50,8 +50,8 @@ function PaliDictionary({ ...props }: Props) {
           Digital Pāḷi Dictionary
         </div>
         <Separator />
-        <div
-          className="px-4 py-2 flex flex-col justify-stretch"
+        <div id="dpd-result"
+          className="px-4 py-2 flex flex-col justify-stretch max-h-[calc(70vh-40px)] overflow-y-auto"
           dangerouslySetInnerHTML={{
             __html:
               status === "pending"
@@ -60,8 +60,8 @@ function PaliDictionary({ ...props }: Props) {
                   }</div>`
                 : status === "error"
                 ? `<pre>${error?.message}</pre>`
-                : data.grammarDict?.innerHTML ??
-                  data.dom.innerHTML,
+                // : data.grammarDict?.innerHTML ??
+                :  data.dom.innerHTML,
           }}
         ></div>
       </div>
