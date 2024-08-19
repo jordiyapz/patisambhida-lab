@@ -16,12 +16,12 @@ const { tika: slug } = Astro.params;
 const entry = await getEntry("tika", slug);
 const tika = await reader.collections.tika.read(slug);
 
-const { Content } = await entry.render();
+const { Content = () => null } = (await entry?.render()) ?? {};
 ---
 
-<DhsLayout title={capitalize(entry.data.title)}>
+<DhsLayout title={entry && capitalize(entry.data.title)}>
   <div class="container">
-    <div class="text-lg font-bold my-2">{entry.data.title}</div>
+    <div class="text-lg font-bold my-2">{entry?.data.title}</div>
     <p class="font-semibold mt-2">Sentences</p>
     <ul>
       {tika?.sentences.map((sentence) => <li>{sentence}</li>)}
