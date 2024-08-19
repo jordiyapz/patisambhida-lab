@@ -104,13 +104,16 @@ dependencies:
   typescript:
     specifier: ^5.5.4
     version: 5.5.4
+  unique-names-generator:
+    specifier: ^4.7.1
+    version: 4.7.1
   zustand:
     specifier: ^4.5.5
     version: 4.5.5(@types/react@18.3.3)(react@18.3.1)
 
 devDependencies:
   drizzle-kit:
-    specifier: ^0.24.0
+    specifier: 0.24.0
     version: 0.24.0
 
 packages:
@@ -8142,6 +8145,11 @@ packages:
       is-plain-obj: 4.1.0
       trough: 2.2.0
       vfile: 6.0.2
+    dev: false
+
+  /unique-names-generator@4.7.1:
+    resolution: {integrity: sha512-lMx9dX+KRmG8sq6gulYYpKWZc9RlGsgBR6aoO8Qsm3qvkSJ+3rAymr+TnV8EDMrIrwuFJ4kruzMWM/OpYzPoow==}
+    engines: {node: '>=8'}
     dev: false
 
   /unist-util-find-after@5.0.0:
