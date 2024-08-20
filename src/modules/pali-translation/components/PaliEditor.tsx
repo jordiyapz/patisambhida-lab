@@ -1,8 +1,6 @@
-"use client";
-
+import clsx from "clsx";
 import { useMemo, useState, type MouseEventHandler } from "react";
 import { Edit } from "lucide-react";
-import clsx from "clsx";
 import { usePaliStore } from "@/modules/pali-translation/lib/pali-store";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -46,12 +44,7 @@ function PaliEditor({ className }: Props) {
     );
   };
   return (
-    <div
-      className={clsx(
-        "flex flex-col px-2 pb-3 border border-slate-800 rounded-md",
-        className
-      )}
-    >
+    <div className={clsx("px-2 pb-3", className)}>
       <div className="flex justify-end py-2">
         {isEditing ? (
           <Button
@@ -85,7 +78,7 @@ function PaliEditor({ className }: Props) {
           }}
         />
       ) : (
-        <div className="py-6 px-3 text-md max-h-[70vh] overflow-auto">
+        <div className="py-6 px-3 text-md overflow-auto">
           {lines.map((line, row) => (
             <div key={row} className="flex max-w-full flex-wrap gap-2 mb-4">
               {line.map((word, index) => {
