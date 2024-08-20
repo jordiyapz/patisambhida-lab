@@ -47,4 +47,5 @@ export const paliSheets = sqliteTable("pali-sheets", {
 
 export type City = typeof cities.$inferSelect; // return type when queried
 export type InsertCity = typeof cities.$inferInsert; // insert type
+export type Sheet = typeof paliSheets.$inferSelect; // insert type
 export type InsertSheet = typeof paliSheets.$inferInsert; // insert type
