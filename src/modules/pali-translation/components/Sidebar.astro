@@ -16,7 +16,7 @@ const { id } = Astro.params;
     <div class="flex mt-4 mb-2 justify-between">
       <span class="font-bold text-xl">Notes</span>
     </div>
-    <PaliSheetList client:load sheets={sheets} activeId={id} />
+    <PaliSheetList client:load activeId={Number(id)} />
   </div>
 </aside>
 

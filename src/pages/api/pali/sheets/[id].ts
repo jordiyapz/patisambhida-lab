@@ -1,7 +1,7 @@
 import db from "@/db";
+import { paliSheets } from "@/db/schema";
 import type { APIRoute } from "astro";
 import { eq } from "drizzle-orm";
-import { paliSheets } from "drizzle/schema";
 
 export const PATCH: APIRoute = async ({ request, params }) => {
   try {

@@ -1,16 +1,21 @@
-import { Button } from "@/components/ui/button";
+import clsx from "clsx";
 import dayjs from "dayjs";
+import toast from "react-hot-toast";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import type { SheetWithAuthor } from "../lib/dto";
+import { useQuery } from "@tanstack/react-query";
+import utc from "dayjs/plugin/utc"; // ES 2015
+import "dayjs/locale/id";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import toast, { Toaster } from "react-hot-toast";
-import clsx from "clsx";
-import { useQuery } from "@tanstack/react-query";
-import { queryKeys } from "../lib/queries";
+import { Button } from "@/components/ui/button";
 import queryClient from "../lib/query-client";
+import { queryKeys } from "../lib/queries";
+import type { SheetWithAuthor } from "../lib/dto";
 import { createPaliSheet, fetchPaliSheets } from "../lib/services";
+
+dayjs.extend(utc);
 
 interface Values {
   title: string;
@@ -40,6 +45,8 @@ function PaliSheetList({ activeId }: Props) {
       500
     );
   };
+
+  console.debug(sheets[0]?.updatedAt);
 
   return (
     <ul className="space-y-2 font-medium">
@@ -105,7 +112,11 @@ function PaliSheetList({ activeId }: Props) {
               </div>
               {sheet.updatedAt && (
                 <div className="mt-1 text-xs text-right text-gray-400">
-                  Updated: {dayjs(sheet.updatedAt).format("MMM, DD | HH:mm")}
+                  Updated:{" "}
+                  {dayjs(sheet.updatedAt)
+                    .utc(true)
+                    .local()
+                    .format("MMM, DD | HH:mm")}
                 </div>
               )}
             </div>

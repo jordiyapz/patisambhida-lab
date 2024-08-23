@@ -15,6 +15,13 @@
       "when": 1724240106837,
       "tag": "0001_equal_red_wolf",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1724426997882,
+      "tag": "0002_early_miss_america",
+      "breakpoints": true
     }
   ]
 }

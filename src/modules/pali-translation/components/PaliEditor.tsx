@@ -2,7 +2,6 @@ import clsx from "clsx";
 import { useEffect, useMemo, useState, type KeyboardEventHandler } from "react";
 import { Edit } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import type { SheetWithAuthor } from "../lib/dto";
 import PaliTranscriptInput from "./PaliTranscriptInput";
 import PaliTokenEditor from "./PaliTokenEditor";
 import { Input } from "@/components/ui/input";

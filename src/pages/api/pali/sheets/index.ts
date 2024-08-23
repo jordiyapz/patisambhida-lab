@@ -1,11 +1,5 @@
 import db from "@/db";
-import {
-  paliSheets,
-  users,
-  type InsertSheet,
-  type Sheet,
-  type User,
-} from "@/db/schema";
+import { paliSheets, users, type InsertSheet } from "@/db/schema";
 import type { SheetWithAuthor } from "@/modules/pali-translation/lib/dto";
 import type { APIRoute } from "astro";
 import dayjs from "dayjs";
