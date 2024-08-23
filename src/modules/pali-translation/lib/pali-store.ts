@@ -46,7 +46,6 @@ export const usePaliStore = create<PaliStore>()(
             }));
           })
           .reduce((acc, line) => [...acc, ...line], [] satisfies Token[]);
-        console.table(tokens);
         return set((state) => ({
           ...state,
           transcript,

@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { fetchDPDict } from "../lib/services";
 import parse from "node-html-parser";
-import queryClient from "../lib/query-client";
+import dpdQueryClient from "../lib/dpd-query-client";
 import { useEffect, useState } from "react";
+import { velthuisToUni } from "../lib/utils";
 
 type Props = {
   className: string;
@@ -26,7 +27,7 @@ function PaliDictionary({ ...props }: Props) {
       queryFn: () => fetchDPDict(search),
       enabled: search !== "",
     },
-    queryClient
+    dpdQueryClient
   );
 
   const dom = data
@@ -49,7 +50,7 @@ function PaliDictionary({ ...props }: Props) {
           <Input
             placeholder="Search..."
             value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            onChange={(e) => setInputValue(velthuisToUni(e.target.value))}
           />
           <Button type="submit">
             {isLoading ? (

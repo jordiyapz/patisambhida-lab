@@ -1,11 +1,10 @@
 ---
-import type { Sheet } from "@/db/schema";
+import type { SheetWithAuthor } from "../lib/dto";
+import { fetchPaliSheets } from "../lib/services";
+import PaliSheetList from "./PaliSheetList";
 
-const sheets: Sheet[] = await fetch(
-  new URL("/api/pali/sheets", Astro.url)
-).then((res) => res.json());
-
-console.debug(sheets[0].transcript?.split("\\n"));
+const sheets = await fetchPaliSheets(Astro.url);
+const { id } = Astro.params;
 ---
 
 <aside
@@ -14,30 +13,14 @@ console.debug(sheets[0].transcript?.split("\\n"));
   aria-label="Sidebar"
 >
   <div class="h-full pb-4 px-2 overflow-y-auto bg-white dark:bg-gray-800">
-    <div class="font-bold text-xl mt-4 mb-2">Notes</div>
-    <ul class="space-y-2 font-medium">
-      {
-        sheets.map((sheet) => (
-          <li>
-            <a
-              href="#"
-              class="flex items-center p-2 text-gray-900 rounded-md dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group border border-slate-600"
-            >
-              <div class="">
-                <span class="font-bold">{sheet.title}</span>
-                <div class="mt-2 text-sm line-clamp-3 ms-2">
-                  {sheet.transcript?.split("\\n").map((line) => (
-                    <div>{line}</div>
-                  ))}
-                </div>
-                <div class="mt-1 text-xs text-right">Created {new Date().toLocaleString()}</div>
-              </div>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
-    <!-- <ul class="space-y-2 font-medium">
+    <div class="flex mt-4 mb-2 justify-between">
+      <span class="font-bold text-xl">Notes</span>
+    </div>
+    <PaliSheetList client:load sheets={sheets} activeId={id} />
+  </div>
+</aside>
+
+<!-- <ul class="space-y-2 font-medium">
       <li>
         <a
           href="#"
@@ -193,5 +176,3 @@ console.debug(sheets[0].transcript?.split("\\n"));
         </a>
       </li>
     </ul> -->
-  </div>
-</aside>
