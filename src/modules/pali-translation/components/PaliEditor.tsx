@@ -1,23 +1,29 @@
-import clsx from "clsx";
 import { useEffect, useMemo, useState, type KeyboardEventHandler } from "react";
+import { useShallow } from "zustand/react/shallow";
+import { useQuery } from "@tanstack/react-query";
 import { Edit, Save } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import PaliTranscriptInput from "./PaliTranscriptInput";
-import PaliTokenEditor from "./PaliTokenEditor";
-import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import clsx from "clsx";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import type { Sheet } from "@/db/schema";
-import queryClient from "../lib/query-client";
-import { queryKeys } from "../lib/queries";
+
 import {
   fetchPaliSheets,
   updatePaliSheet,
   updateTranslation,
 } from "../lib/services";
-import { useQuery } from "@tanstack/react-query";
+import { queryKeys } from "../lib/queries";
+import queryClient from "../lib/query-client";
 import { useNewPaliStore } from "../lib/pali-store";
-import { useShallow } from "zustand/react/shallow";
+import PaliTranscriptInput from "./PaliTranscriptInput";
+import PaliTokenEditor from "./PaliTokenEditor";
+
+const featureFlags = {
+  enableEdit: false,
+};
 
 type Props = { className: string; sheetId: Sheet["id"] };
 interface Values {
@@ -69,7 +75,7 @@ function PaliEditor({ className, sheetId }: Props) {
     await toast.promise(updateTranslation(sheet.id, lines), {
       error: (err) => "Error: " + err.message,
       loading: "Loading...",
-      success: (res) => `Note "${sheet.title}" updated!`,
+      success: `Note "${sheet.title}" updated!`,
     });
     queryClient.invalidateQueries({ queryKey: queryKeys.listSheets });
   };
@@ -106,16 +112,18 @@ function PaliEditor({ className, sheetId }: Props) {
             </Button>
           ) : (
             <>
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setIsEditing(true);
-                }}
-              >
-                <Edit className="mr-2 h-4 w-4" /> Edit
-              </Button>
+              {featureFlags.enableEdit && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsEditing(true);
+                  }}
+                >
+                  <Edit className="mr-2 h-4 w-4" /> Edit
+                </Button>
+              )}
               <Button
                 type="button"
                 className="bg-green-500 hover:bg-green-300"

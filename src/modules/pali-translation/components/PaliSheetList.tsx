@@ -91,8 +91,10 @@ function PaliSheetList({ activeId }: Props) {
           <a
             href={`${sheet.id}`}
             className={clsx(
-              "flex items-center p-2 text-gray-900 rounded-md dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group border border-slate-600",
-              Number(activeId) === sheet.id && "border-2 border-green-600"
+              "flex items-center p-2 text-gray-900 rounded-md dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ",
+              activeId === sheet.id
+                ? "border-2 border-green-600"
+                : "border border-slate-600"
             )}
           >
             <div className="w-full">
@@ -110,7 +112,7 @@ function PaliSheetList({ activeId }: Props) {
               </div>
               {sheet.updatedAt && (
                 <div className="mt-1 text-xs text-right text-gray-400">
-                  Updated:{" "}
+                  Last update:{" "}
                   {dayjs(sheet.updatedAt)
                     .utc(true)
                     .local()

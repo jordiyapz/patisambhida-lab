@@ -1,9 +1,6 @@
 ---
-import type { SheetWithAuthor } from "../lib/dto";
-import { fetchPaliSheets } from "../lib/services";
 import PaliSheetList from "./PaliSheetList";
 
-const sheets = await fetchPaliSheets(Astro.url);
 const { id } = Astro.params;
 ---
 

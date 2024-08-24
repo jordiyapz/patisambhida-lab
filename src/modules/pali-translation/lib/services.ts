@@ -43,9 +43,14 @@ export async function updatePaliSheet(
 }
 
 export async function updateTranslation(id: Sheet["id"], data: Line[]) {
-  return fetch("/api/pali/sheets/" + id, {
-    method: "PATCH",
-    headers: jsonHeaders,
-    body: JSON.stringify({ translation: JSON.stringify(data) }),
-  }).then((r) => r.json() as Promise<Sheet>);
+  return updatePaliSheet(id, { translation: JSON.stringify(data) });
+}
+
+// TODO: implement updateTranscript
+export async function updateTranscript(id: Sheet["id"], data: string) {
+  return updatePaliSheet(id, {
+    transcript: data,
+    // TODO: handle token movement
+    // translation: JSON.stringify(),
+  });
 }
