@@ -52,7 +52,7 @@ export const paliSheets = sqliteTable("pali-sheets", {
   ),
   author: text("author").references(() => users.id, { onDelete: "set null" }),
   transcript: text("transcript").default(""),
-  val: text("val", { mode: "json" }),
+  translation: text("translation", { mode: "json" }),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .notNull()
     .default(sql`(CURRENT_TIMESTAMP)`),

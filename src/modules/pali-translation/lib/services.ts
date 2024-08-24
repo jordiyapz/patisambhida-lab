@@ -1,6 +1,6 @@
 import type { InsertSheet, Sheet } from "@/db/schema";
 import type { SheetWithAuthor } from "@/modules/pali-translation/lib/dto";
-import { jsonHeaders } from "./utils";
+import { jsonHeaders, type Line } from "./utils";
 
 export const fetchDPDict = async (search: string) => {
   const url = `https://corsmirror.onrender.com/v1/cors?url=${encodeURIComponent(
@@ -39,5 +39,13 @@ export async function updatePaliSheet(
     method: "PATCH",
     headers: jsonHeaders,
     body: JSON.stringify(data),
+  }).then((r) => r.json() as Promise<Sheet>);
+}
+
+export async function updateTranslation(id: Sheet["id"], data: Line[]) {
+  return fetch("/api/pali/sheets/" + id, {
+    method: "PATCH",
+    headers: jsonHeaders,
+    body: JSON.stringify({ translation: JSON.stringify(data) }),
   }).then((r) => r.json() as Promise<Sheet>);
 }

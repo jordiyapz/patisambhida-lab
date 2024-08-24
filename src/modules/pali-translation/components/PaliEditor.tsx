@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import { useEffect, useMemo, useState, type KeyboardEventHandler } from "react";
-import { Edit } from "lucide-react";
+import { Edit, Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import PaliTranscriptInput from "./PaliTranscriptInput";
 import PaliTokenEditor from "./PaliTokenEditor";
@@ -10,8 +10,14 @@ import toast from "react-hot-toast";
 import type { Sheet } from "@/db/schema";
 import queryClient from "../lib/query-client";
 import { queryKeys } from "../lib/queries";
-import { fetchPaliSheets, updatePaliSheet } from "../lib/services";
+import {
+  fetchPaliSheets,
+  updatePaliSheet,
+  updateTranslation,
+} from "../lib/services";
 import { useQuery } from "@tanstack/react-query";
+import { useNewPaliStore } from "../lib/pali-store";
+import { useShallow } from "zustand/react/shallow";
 
 type Props = { className: string; sheetId: Sheet["id"] };
 interface Values {
@@ -28,6 +34,7 @@ function PaliEditor({ className, sheetId }: Props) {
   const sheet = sheets?.find((s) => s.id === sheetId);
 
   const [isEditing, setIsEditing] = useState(false);
+  const [lines] = useNewPaliStore(useShallow((s) => [s.lines]));
 
   const defaultValues = useMemo(
     () => ({
@@ -55,6 +62,16 @@ function PaliEditor({ className, sheetId }: Props) {
     });
     queryClient.invalidateQueries({ queryKey: queryKeys.listSheets });
     setIsEditing(false);
+  };
+
+  const overwriteTranslation = async () => {
+    if (!sheet) return;
+    await toast.promise(updateTranslation(sheet.id, lines), {
+      error: (err) => "Error: " + err.message,
+      loading: "Loading...",
+      success: (res) => `Note "${sheet.title}" updated!`,
+    });
+    queryClient.invalidateQueries({ queryKey: queryKeys.listSheets });
   };
 
   const handleKeyDown: KeyboardEventHandler = async (event) => {
@@ -88,16 +105,25 @@ function PaliEditor({ className, sheetId }: Props) {
               Apply <pre className="text-xs ml-1 align-super">[Ctrl+Enter]</pre>
             </Button>
           ) : (
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={(e) => {
-                e.preventDefault();
-                setIsEditing(true);
-              }}
-            >
-              <Edit className="mr-2 h-4 w-4" /> Edit
-            </Button>
+            <>
+              <Button
+                type="button"
+                variant="ghost"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsEditing(true);
+                }}
+              >
+                <Edit className="mr-2 h-4 w-4" /> Edit
+              </Button>
+              <Button
+                type="button"
+                className="bg-green-500 hover:bg-green-300"
+                onClick={overwriteTranslation}
+              >
+                <Save className="mr-2 h-4 w-4" /> Save
+              </Button>
+            </>
           )}
         </div>
       </div>

@@ -1,42 +1,45 @@
 import { useShallow } from "zustand/react/shallow";
-import { useMemo, type MouseEventHandler } from "react";
+import { useEffect, useMemo, type MouseEventHandler } from "react";
 import clsx from "clsx";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { usePaliStore } from "../lib/pali-store";
+import { useNewPaliStore, usePaliStore } from "../lib/pali-store";
 import type { Sheet } from "@/db/schema";
 import type { SheetWithAuthor } from "../lib/dto";
 
 type Props = { sheet: Sheet | SheetWithAuthor };
 function PaliTokenEditor({ sheet }: Props) {
   const [
-    transcriptq,
-    tokens,
-    sentences,
-    setSearch,
-    setSentence,
+    lines,
+    initializeLines,
+    setLines,
+    setLineSummary,
     setTokenCase,
     setTokenMeaning,
-  ] = usePaliStore(
+  ] = useNewPaliStore(
     useShallow((s) => [
-      s.transcript,
-      s.tokens,
-      s.sentences,
-      s.setSearch,
-      s.setSentence,
+      s.lines,
+      s.initializeLines,
+      s.setLines,
+      s.setLineSummary,
       s.setTokenCase,
       s.setTokenMeaning,
     ])
   );
 
-  const transcript = sheet.transcript ?? "";
+  const [setSearch] = useNewPaliStore(useShallow((s) => [s.setSearch]));
 
-  const lines = useMemo(() => {
-    return transcript.split("\n").map((x) => x.split(" "));
-  }, [transcript]);
+  useEffect(() => {
+    const transcript = sheet.transcript ?? "";
+    const translation = JSON.parse(sheet.translation as string);
+
+    if (!translation) initializeLines(transcript);
+    else setLines(translation);
+  }, [sheet]);
 
   const handleWordSearch: MouseEventHandler<HTMLSpanElement> = (e) => {
     setSearch(
+      // Remove all punctuations
       e.currentTarget.innerText.replaceAll(
         /[\u104a\u104b\u2018\u2019",\.\?]/g,
         ""
@@ -45,23 +48,19 @@ function PaliTokenEditor({ sheet }: Props) {
   };
 
   return (
-    <div className="py-6 px-3 text-md overflow-auto">
+    <div className="mt-2 pb-6 px-3 text-md overflow-auto">
       {lines.map((line, row) => (
         <div key={row} className="flex max-w-full flex-wrap gap-2 mb-4">
-          {line.map((word, index) => {
-            if (!word) return null;
-
-            const token = tokens.find(
-              (t) => t.row === row && t.index === index
-            );
+          {line.tokens.map((token, index) => {
+            // const token = lines.find((t) => t.row === row && t.index === index);
 
             return (
-              <div key={word + index} className="h-16 flex flex-col">
+              <div key={index} className="h-16 flex flex-col">
                 <span
                   className="cursor-pointer hover:text-green-400"
                   onClick={handleWordSearch}
                 >
-                  {word}
+                  {token.symbol}
                 </span>
                 <Input
                   className={clsx(
@@ -71,9 +70,7 @@ function PaliTokenEditor({ sheet }: Props) {
                   size={token?.case.length ?? 5}
                   placeholder="case..."
                   value={token?.case ?? ""}
-                  onChange={(e) =>
-                    setTokenCase({ row, index, value: e.target.value })
-                  }
+                  onChange={(e) => setTokenCase([row, index], e.target.value)}
                 />
                 <Input
                   size={token?.meaning.length ?? 5}
@@ -84,7 +81,7 @@ function PaliTokenEditor({ sheet }: Props) {
                   placeholder="meaning..."
                   value={token?.meaning ?? ""}
                   onChange={(e) =>
-                    setTokenMeaning({ row, index, value: e.target.value })
+                    setTokenMeaning([row, index], e.target.value)
                   }
                 />
               </div>
@@ -92,8 +89,9 @@ function PaliTokenEditor({ sheet }: Props) {
           })}
           <Textarea
             className="rounded-sm"
-            value={sentences[row]}
-            onChange={(e) => setSentence(row, e.target.value)}
+            value={line.summary}
+            placeholder="Line summary..."
+            onChange={(e) => setLineSummary(row, e.target.value)}
           />
         </div>
       ))}

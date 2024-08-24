@@ -46,8 +46,6 @@ function PaliSheetList({ activeId }: Props) {
     );
   };
 
-  console.debug(sheets[0]?.updatedAt);
-
   return (
     <ul className="space-y-2 font-medium">
       {!isCreating ? (

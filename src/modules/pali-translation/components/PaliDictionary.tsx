@@ -1,6 +1,9 @@
 import clsx from "clsx";
 import { Loader2 } from "lucide-react";
-import { usePaliStore } from "@/modules/pali-translation/lib/pali-store";
+import {
+  useNewPaliStore,
+  usePaliStore,
+} from "@/modules/pali-translation/lib/pali-store";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,14 +12,16 @@ import parse from "node-html-parser";
 import dpdQueryClient from "../lib/dpd-query-client";
 import { useEffect, useState } from "react";
 import { velthuisToUni } from "../lib/utils";
+import { useShallow } from "zustand/react/shallow";
 
 type Props = {
   className: string;
 };
 
 function PaliDictionary({ ...props }: Props) {
-  const search = usePaliStore((state) => state.search);
-  const setSearch = usePaliStore((state) => state.setSearch);
+  const [search, setSearch] = useNewPaliStore(
+    useShallow((s) => [s.search, s.setSearch])
+  );
   const [inputValue, setInputValue] = useState(search);
 
   useEffect(() => setInputValue(search), [search]);

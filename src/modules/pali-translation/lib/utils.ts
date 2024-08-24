@@ -48,3 +48,28 @@ export const jsonHeaders = {
   Accept: "application/json",
   "Content-Type": "application/json",
 };
+
+export interface Token {
+  symbol: string;
+  case: string;
+  meaning: string;
+}
+
+export interface Line {
+  tokens: Token[];
+  summary: string;
+}
+
+export function initializeLines(transcript: string) {
+  return transcript.split("\n").map<Line>((x) => ({
+    tokens: x
+      .split(" ")
+      .filter((s) => !!s)
+      .map<Token>((symbol) => ({
+        symbol,
+        case: "",
+        meaning: "",
+      })),
+    summary: "",
+  }));
+}
