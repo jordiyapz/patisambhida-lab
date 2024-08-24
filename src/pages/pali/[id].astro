@@ -3,8 +3,15 @@ import PaliEditor from "@/modules/pali-translation/components/PaliEditor";
 import PaliDictionary from "@/modules/pali-translation/components/PaliDictionary";
 import PaliLayout from "@/layouts/PaliLayout.astro";
 import { Toaster } from "react-hot-toast";
+import { fetchPaliSheets } from "@/modules/pali-translation/lib/services";
 
 const { id } = Astro.params;
+
+const sheets = await fetchPaliSheets(Astro.url);
+const idList = sheets.map((s) => s.id);
+if (!idList.includes(Number(id))) {
+  return Astro.redirect("/pali")
+}
 ---
 
 <PaliLayout>
