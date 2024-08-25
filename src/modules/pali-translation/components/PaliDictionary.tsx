@@ -26,14 +26,19 @@ function PaliDictionary({ ...props }: Props) {
 
   useEffect(() => setInputValue(search), [search]);
 
-  const { status, data, error, isLoading } = useQuery(
+  const { status, data, error, isLoading, refetch } = useQuery(
     {
       queryKey: queryKeys.dictByQ(search),
       queryFn: () => fetchDPDict(search),
       enabled: search !== "",
+      retry: 10,
     },
     dpdQueryClient
   );
+
+  useEffect(() => {
+    if (data === "Internal Server Error") refetch();
+  }, [data, refetch]);
 
   const dom = data
     ? parse(data, { blockTextElements: { style: false } })
