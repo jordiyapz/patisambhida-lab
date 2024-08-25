@@ -9,9 +9,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNewPaliStore } from "@/modules/pali-translation/lib/pali-store";
 
+import { queryKeys } from "../lib/queries";
+import { velthuisToUni } from "../lib/utils";
 import { fetchDPDict } from "../lib/services";
 import dpdQueryClient from "../lib/dpd-query-client";
-import { velthuisToUni } from "../lib/utils";
 
 type Props = {
   className: string;
@@ -27,7 +28,7 @@ function PaliDictionary({ ...props }: Props) {
 
   const { status, data, error, isLoading } = useQuery(
     {
-      queryKey: ["dict-search", { q: search }],
+      queryKey: queryKeys.dictByQ(search),
       queryFn: () => fetchDPDict(search),
       enabled: search !== "",
     },
@@ -74,7 +75,7 @@ function PaliDictionary({ ...props }: Props) {
         ) : (
           <div
             id="dpd-result"
-            className="p-4 pt-2 pb-40 flex flex-col justify-stretch overflow-y-auto max-h-full"
+            className="p-4 pt-2 flex flex-col justify-stretch overflow-y-auto max-h-[70dvh]"
             dangerouslySetInnerHTML={{
               __html: dom?.innerHTML ?? "Failed to load data",
             }}

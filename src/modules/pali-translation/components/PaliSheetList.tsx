@@ -21,8 +21,9 @@ interface Values {
   title: string;
 }
 
-type Props = { activeId?: number };
-function PaliSheetList({ activeId }: Props) {
+type Props = { activeId?: number; className?: string };
+
+function PaliSheetList({ activeId, className }: Props) {
   const [isCreating, setCreating] = useState(false);
   const { handleSubmit, register } = useForm<Values>({});
   const { data } = useQuery(
@@ -47,7 +48,7 @@ function PaliSheetList({ activeId }: Props) {
   };
 
   return (
-    <ul className="space-y-2 font-medium">
+    <div className={clsx(className)}>
       {!isCreating ? (
         <Button
           variant="outline"
@@ -86,44 +87,50 @@ function PaliSheetList({ activeId }: Props) {
           </div>
         </form>
       )}
-      {sheets.map((sheet) => (
-        <li key={sheet.id}>
-          <a
-            href={`/pali/${sheet.id}`}
-            className={clsx(
-              "flex items-center p-2 text-gray-900 rounded-md dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ",
-              activeId === sheet.id
-                ? "border-2 border-green-600"
-                : "border border-slate-600"
-            )}
-          >
-            <div className="w-full">
-              <span className="font-bold">{sheet.title}</span>
-              {sheet.author && (
-                <div className="text-xs pl-2 border-l-2 border-gray-400 text-gray-400">
-                  by {sheet.author.username ?? "unknown"}
-                </div>
+      <ul
+        className={
+          "mt-2 space-y-2 font-medium max-h-[calc(100dvh-4rem-100px)] overflow-y-scroll pr-3"
+        }
+      >
+        {sheets.map((sheet) => (
+          <li key={sheet.id}>
+            <a
+              href={`/pali/${sheet.id}`}
+              className={clsx(
+                "flex items-center p-2 text-gray-900 rounded-md dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group ",
+                activeId === sheet.id
+                  ? "border-2 border-green-600"
+                  : "border border-slate-600"
               )}
-              {/* <Separator className="w-full dark:bg-slate-100"/> */}
-              <div className="mt-2 text-sm line-clamp-3 ms-2">
-                {sheet.transcript?.split("\\n").map((line, i) => (
-                  <div key={i}>{line}</div>
-                ))}
+            >
+              <div className="w-full">
+                <span className="font-bold">{sheet.title}</span>
+                {sheet.author && (
+                  <div className="text-xs pl-2 border-l-2 border-gray-400 text-gray-400">
+                    by {sheet.author.username ?? "unknown"}
+                  </div>
+                )}
+                {/* <Separator className="w-full dark:bg-slate-100"/> */}
+                <div className="mt-2 text-sm line-clamp-3 ms-2">
+                  {sheet.transcript?.split("\\n").map((line, i) => (
+                    <div key={i}>{line}</div>
+                  ))}
+                </div>
+                {sheet.updatedAt && (
+                  <div className="mt-1 text-xs text-right text-gray-400">
+                    Last update:{" "}
+                    {dayjs(sheet.updatedAt)
+                      // .utc(true)
+                      // .local()
+                      .format("MMM, DD | HH:mm")}
+                  </div>
+                )}
               </div>
-              {sheet.updatedAt && (
-                <div className="mt-1 text-xs text-right text-gray-400">
-                  Last update:{" "}
-                  {dayjs(sheet.updatedAt)
-                    // .utc(true)
-                    // .local()
-                    .format("MMM, DD | HH:mm")}
-                </div>
-              )}
-            </div>
-          </a>
-        </li>
-      ))}
-    </ul>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 

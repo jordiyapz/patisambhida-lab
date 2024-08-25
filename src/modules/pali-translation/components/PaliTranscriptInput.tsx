@@ -10,7 +10,7 @@ const PaliTranscriptInput = forwardRef<HTMLTextAreaElement, Props>(
         ref={ref}
         id="pali-editor"
         className="flex-grow text-md leading-[4rem]"
-        placeholder="Write pali script here..."
+        placeholder="Write pāḷi script here..."
         rows={8}
         {...props}
       />
