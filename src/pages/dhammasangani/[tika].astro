@@ -1,9 +1,10 @@
 ---
-import { getCollection, getEntry } from "astro:content";
+import { getEntry } from "astro:content";
 import { capitalize } from "@/lib/utils";
 import DhsLayout from "@/modules/dhammasangani/components/DhsLayout.astro";
-import { type TikaEntry } from "@/modules/dhammasangani/lib/types";
 import reader from "@/modules/dhammasangani/lib/reader";
+
+export const prerender = true;
 
 export async function getStaticPaths() {
   const slugs = await reader.collections.tika.list();

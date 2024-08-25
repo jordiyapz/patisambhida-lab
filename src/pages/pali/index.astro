@@ -3,14 +3,18 @@ import PaliLayout from "@/layouts/PaliLayout.astro";
 import { fetchPaliSheets } from "@/modules/pali-translation/lib/services";
 import LeftDrawer from "@/modules/pali-translation/components/LeftDrawer";
 
-const sheets = await fetchPaliSheets(Astro.url);
-if (sheets.length) {
-  return Astro.redirect(Astro.url + "/" + sheets[0].id);
+try {
+  const sheets = await fetchPaliSheets(Astro.url);
+  if (sheets.length) {
+    return Astro.redirect(Astro.url + "/" + sheets[0].id);
+  }
+} catch (error) {
+  console.error(error);
 }
 ---
 
-<PaliLayout >
-  <LeftDrawer className="w-60 fixed left-0 top-14" client:load/>
+<PaliLayout>
+  <LeftDrawer className="w-60 fixed left-0 top-14" client:load />
   <div class="container pl-64">
     <h1 class="text-xl font-extrabold">Welcome to Paḷi translation tool</h1>
     <br />

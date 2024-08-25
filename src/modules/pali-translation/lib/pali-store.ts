@@ -1,5 +1,5 @@
 import { create, type StateCreator } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import { initializeLines, type Line } from "./utils";
 import { immer } from "zustand/middleware/immer";
 
@@ -28,9 +28,12 @@ export type PaliStore = {
   setSentence: (index: number, value: string) => void;
 };
 
+/**
+ * @deprecated use `useNewPaliStore` instead
+ */
 export const usePaliStore = create<PaliStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       transcript: "",
       search: "",
       tokens: [],

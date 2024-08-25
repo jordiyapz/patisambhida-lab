@@ -1,18 +1,17 @@
 import clsx from "clsx";
+import parse from "node-html-parser";
 import { Loader2 } from "lucide-react";
-import {
-  useNewPaliStore,
-  usePaliStore,
-} from "@/modules/pali-translation/lib/pali-store";
+import { useEffect, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
+
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useNewPaliStore } from "@/modules/pali-translation/lib/pali-store";
+
 import { fetchDPDict } from "../lib/services";
-import parse from "node-html-parser";
 import dpdQueryClient from "../lib/dpd-query-client";
-import { useEffect, useState } from "react";
 import { velthuisToUni } from "../lib/utils";
-import { useShallow } from "zustand/react/shallow";
 
 type Props = {
   className: string;
