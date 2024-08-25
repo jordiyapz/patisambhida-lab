@@ -28,6 +28,7 @@ function BatchTranslateButton() {
             return {
               queryKey: queryKeys.dictByQ(symbol),
               queryFn: () => fetchDPDict(symbol),
+              retry: true,
             } satisfies QueryOptions;
           })
         : [],
