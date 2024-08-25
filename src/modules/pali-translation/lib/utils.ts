@@ -44,6 +44,10 @@ export function velthuisToUni(velthiusInput: string): string {
   return uni;
 }
 
+export function removePunctuation(str: string): string {
+  return str.replaceAll(/[\u104a\u104b\u2018\u2019",\.\?]/g, "");
+}
+
 export const jsonHeaders = {
   Accept: "application/json",
   "Content-Type": "application/json",
