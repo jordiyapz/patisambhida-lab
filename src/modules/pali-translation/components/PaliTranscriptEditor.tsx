@@ -1,5 +1,5 @@
 import { useEffect, useMemo, type KeyboardEventHandler } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import clsx from "clsx";
 
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 import { queryKeys } from "../lib/queries";
+import { velthuisToUni } from "../lib/utils";
 import queryClient from "../lib/query-client";
 import type { SheetWithAuthor } from "../lib/dto";
 import { updatePaliSheet } from "../lib/services";
@@ -33,7 +34,7 @@ function PaliTranscriptEditor({ className, sheet, onApplied }: Props) {
     [sheet]
   );
 
-  const { register, handleSubmit, trigger, reset } = useForm<Values>({
+  const { register, handleSubmit, trigger, reset, control } = useForm<Values>({
     defaultValues,
   });
 
@@ -79,9 +80,19 @@ function PaliTranscriptEditor({ className, sheet, onApplied }: Props) {
           </Button>
         </div>
       </div>
-      <PaliTranscriptInput
-        {...register("transcript")}
-        onKeyDown={handleKeyDown}
+      <Controller
+        name="transcript"
+        control={control}
+        render={({ field }) => (
+          <PaliTranscriptInput
+            name="transcript"
+            onKeyDown={handleKeyDown}
+            value={field.value}
+            onChange={(e) => {
+              field.onChange(velthuisToUni(e.currentTarget.value));
+            }}
+          />
+        )}
       />
     </form>
   );
