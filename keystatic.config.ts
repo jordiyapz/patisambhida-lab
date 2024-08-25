@@ -1,5 +1,5 @@
 // keystatic.config.ts
-import { config, fields, collection, component } from "@keystatic/core";
+import { config, fields, collection } from "@keystatic/core";
 
 export default config({
   ui: { brand: { name: "Paṭisambidha LAB" } },

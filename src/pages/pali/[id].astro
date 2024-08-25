@@ -1,15 +1,8 @@
 ---
 import { Toaster } from "react-hot-toast";
 import PaliLayout from "@/layouts/PaliLayout.astro";
-import PaliEditor from "@/modules/pali-translation/components/PaliEditor";
 import PaliResizableLayout from "@/modules/pali-translation/components/PaliResizableLayout";
-import PaliDictionary from "@/modules/pali-translation/components/PaliDictionary";
 import { fetchPaliSheets } from "@/modules/pali-translation/lib/services";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
 
 const { id } = Astro.params;
 

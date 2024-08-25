@@ -1,5 +1,4 @@
 import { Textarea } from "@/components/ui/textarea";
-import { usePaliStore } from "../lib/pali-store";
 import { forwardRef, type HTMLProps } from "react";
 
 type Props = HTMLProps<HTMLTextAreaElement>;

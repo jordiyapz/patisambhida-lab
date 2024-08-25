@@ -1,10 +1,11 @@
 import { useShallow } from "zustand/react/shallow";
-import { useEffect, useMemo, type MouseEventHandler } from "react";
+import { useEffect, type MouseEventHandler } from "react";
 import clsx from "clsx";
+import type { Sheet } from "@/db/schema";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { useNewPaliStore, usePaliStore } from "../lib/pali-store";
-import type { Sheet } from "@/db/schema";
+
+import { useNewPaliStore } from "../lib/pali-store";
 import type { SheetWithAuthor } from "../lib/dto";
 
 type Props = { sheet: Sheet | SheetWithAuthor };

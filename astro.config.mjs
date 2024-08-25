@@ -3,8 +3,6 @@ import react from "@astrojs/react";
 import tailwind from "@astrojs/tailwind";
 import keystatic from "@keystatic/astro";
 import markdoc from "@astrojs/markdoc";
-
-import vercel from "@astrojs/vercel/serverless";
 import vercelServerless from "@astrojs/vercel/serverless";
 
 // https://astro.build/config
