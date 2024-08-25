@@ -74,7 +74,7 @@ function PaliDictionary({ ...props }: Props) {
         ) : (
           <div
             id="dpd-result"
-            className="p-4 pt-2 pb-20 flex flex-col justify-stretch overflow-y-auto max-h-full"
+            className="p-4 pt-2 pb-40 flex flex-col justify-stretch overflow-y-auto max-h-full"
             dangerouslySetInnerHTML={{
               __html: dom?.innerHTML ?? "Failed to load data",
             }}
