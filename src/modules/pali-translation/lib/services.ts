@@ -12,7 +12,6 @@ export const fetchDPDict = async (search: string) => {
 
 export async function fetchPaliSheets(baseUrl: URL | string = "") {
   try {
-    console.log({ baseUrl });
     const url = "/api/pali/sheets";
     const sheets: SheetWithAuthor[] = await fetch(
       baseUrl ? new URL(url, baseUrl) : url

@@ -114,8 +114,8 @@ function PaliSheetList({ activeId }: Props) {
                 <div className="mt-1 text-xs text-right text-gray-400">
                   Last update:{" "}
                   {dayjs(sheet.updatedAt)
-                    .utc(true)
-                    .local()
+                    // .utc(true)
+                    // .local()
                     .format("MMM, DD | HH:mm")}
                 </div>
               )}
