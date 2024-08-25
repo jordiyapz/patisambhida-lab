@@ -1,28 +1,26 @@
 ---
-import PaliEditor from "@/modules/pali-translation/components/PaliEditor";
-import PaliDictionary from "@/modules/pali-translation/components/PaliDictionary";
-import PaliLayout from "@/layouts/PaliLayout.astro";
 import { Toaster } from "react-hot-toast";
+import PaliLayout from "@/layouts/PaliLayout.astro";
+import PaliEditor from "@/modules/pali-translation/components/PaliEditor";
+import PaliResizableLayout from "@/modules/pali-translation/components/PaliResizableLayout";
+import PaliDictionary from "@/modules/pali-translation/components/PaliDictionary";
 import { fetchPaliSheets } from "@/modules/pali-translation/lib/services";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 
 const { id } = Astro.params;
 
 const sheets = await fetchPaliSheets(Astro.url);
 const idList = sheets.map((s) => s.id);
 if (!idList.includes(Number(id))) {
-  return Astro.redirect("/pali")
+  return Astro.redirect("/pali");
 }
 ---
 
 <PaliLayout>
-  <PaliEditor
-    client:load
-    className="h-[calc(100vh-3.5rem)]"
-    sheetId={Number(id)}
-  />
-  <PaliDictionary
-    className="h-[calc(100vh-3.5rem)] fixed top-14 right-0 w-80"
-    client:only="react"
-  />
+  <PaliResizableLayout sheetId={Number(id)} client:only="react" />
   <Toaster client:load position="top-center" />
 </PaliLayout>

@@ -25,7 +25,7 @@ const featureFlags = {
   enableEdit: false,
 };
 
-type Props = { className: string; sheetId: Sheet["id"] };
+type Props = { className?: string; sheetId: Sheet["id"] };
 interface Values {
   title: string;
   transcript: string;
@@ -115,6 +115,7 @@ function PaliEditor({ className, sheetId }: Props) {
               {featureFlags.enableEdit && (
                 <Button
                   type="button"
+                  size="sm"
                   variant="ghost"
                   onClick={(e) => {
                     e.preventDefault();
@@ -126,6 +127,7 @@ function PaliEditor({ className, sheetId }: Props) {
               )}
               <Button
                 type="button"
+                size="sm"
                 className="bg-green-500 hover:bg-green-300"
                 onClick={overwriteTranslation}
               >
