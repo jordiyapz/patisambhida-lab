@@ -9,9 +9,9 @@ const { id } = Astro.params;
 try {
   const sheets = await fetchPaliSheets(Astro.url);
   const idList = sheets.map((s) => s.id);
-  if (!idList.includes(Number(id))) {
-    return Astro.redirect("/pali");
-  }
+  // if (!idList.includes(Number(id))) {
+  //   return Astro.redirect("/pali");
+  // }
 } catch (error) {
   console.error(error);
 }
