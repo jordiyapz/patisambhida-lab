@@ -1,0 +1,1 @@
+ALTER TABLE `pali-sheets` RENAME COLUMN `val` TO `translation`;

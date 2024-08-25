@@ -1,5 +1,7 @@
-import { create } from "zustand";
+import { create, type StateCreator } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
+import { initializeLines, type Line } from "./utils";
+import { immer } from "zustand/middleware/immer";
 
 interface Token {
   row: number;
@@ -46,7 +48,6 @@ export const usePaliStore = create<PaliStore>()(
             }));
           })
           .reduce((acc, line) => [...acc, ...line], [] satisfies Token[]);
-        console.table(tokens);
         return set((state) => ({
           ...state,
           transcript,
@@ -113,4 +114,66 @@ export const usePaliStore = create<PaliStore>()(
         ),
     }
   )
+);
+
+type XY = [x: number, y: number];
+
+export interface LinesSlice {
+  lines: Line[];
+  setLines: (line: Line[]) => void;
+  initializeLines: (transcript: string) => void;
+  setLineSummary: (row: number, value: string) => void;
+  setTokenCase: (location: XY, value: string) => void;
+  setTokenMeaning: (location: XY, value: string) => void;
+}
+
+type ImmerStateCreator<T> = StateCreator<
+  T,
+  [["zustand/immer", never], never],
+  [],
+  T
+>;
+
+const createLinesSlice: ImmerStateCreator<LinesSlice> = (set) => ({
+  lines: [],
+  setLines: (lines: Line[]) =>
+    set((s) => {
+      s.lines = lines;
+    }),
+  initializeLines: (transcript) =>
+    set((s) => {
+      s.lines = initializeLines(transcript);
+    }),
+  setLineSummary: (row, value) =>
+    set((s) => {
+      s.lines[row].summary = value;
+    }),
+  setTokenCase: ([row, col], value) =>
+    set((s) => {
+      s.lines[row].tokens[col].case = value;
+    }),
+  setTokenMeaning: ([row, col], value) =>
+    set((s) => {
+      s.lines[row].tokens[col].meaning = value;
+    }),
+});
+
+interface SearchSlice {
+  search: string;
+  setSearch: (value: string) => void;
+}
+
+const createSearchSlice: ImmerStateCreator<SearchSlice> = (set) => ({
+  search: "",
+  setSearch: (value: string) =>
+    set((s) => {
+      s.search = value;
+    }),
+});
+
+export const useNewPaliStore = create<LinesSlice & SearchSlice>()(
+  immer((...a) => ({
+    ...createLinesSlice(...a),
+    ...createSearchSlice(...a),
+  }))
 );

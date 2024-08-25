@@ -1,149 +1,151 @@
-"use client";
-
-import { useMemo, useState, type MouseEventHandler } from "react";
-import { Edit } from "lucide-react";
+import { useEffect, useMemo, useState, type KeyboardEventHandler } from "react";
+import { useShallow } from "zustand/react/shallow";
+import { useQuery } from "@tanstack/react-query";
+import { Edit, Save } from "lucide-react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import clsx from "clsx";
-import { usePaliStore } from "@/modules/pali-translation/lib/pali-store";
+
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
+import type { Sheet } from "@/db/schema";
 
-type Props = { className: string };
+import {
+  fetchPaliSheets,
+  updatePaliSheet,
+  updateTranslation,
+} from "../lib/services";
+import { queryKeys } from "../lib/queries";
+import queryClient from "../lib/query-client";
+import { useNewPaliStore } from "../lib/pali-store";
+import PaliTranscriptInput from "./PaliTranscriptInput";
+import PaliTokenEditor from "./PaliTokenEditor";
 
-function PaliEditor({ className }: Props) {
+const featureFlags = {
+  enableEdit: false,
+};
+
+type Props = { className?: string; sheetId: Sheet["id"] };
+interface Values {
+  title: string;
+  transcript: string;
+}
+
+function PaliEditor({ className, sheetId }: Props) {
+  const { data: sheets } = useQuery(
+    { queryKey: queryKeys.listSheets, queryFn: () => fetchPaliSheets() },
+    queryClient
+  );
+
+  const sheet = sheets?.find((s) => s.id === sheetId);
+
   const [isEditing, setIsEditing] = useState(false);
-  const transcript = usePaliStore((s) => s.transcript);
-  const tokens = usePaliStore((s) => s.tokens);
-  const sentences = usePaliStore((s) => s.sentences);
-  const [setSearch, setTranscript, setTokenCase, setTokenMeaning, setSentence] =
-    usePaliStore((s) => [
-      s.setSearch,
-      s.setTranscript,
-      s.setTokenCase,
-      s.setTokenMeaning,
-      s.setSentence,
-    ]);
+  const [lines] = useNewPaliStore(useShallow((s) => [s.lines]));
 
-  const lines = useMemo(() => {
-    return transcript.split("\n").map((x) => x.split(" "));
-  }, [transcript]);
+  const defaultValues = useMemo(
+    () => ({
+      title: sheet?.title ?? "",
+      transcript: sheet?.transcript ?? "",
+    }),
+    [sheet]
+  );
 
-  const handleKeyDown: React.KeyboardEventHandler<HTMLTextAreaElement> = (
-    event
-  ) => {
+  const { register, handleSubmit, trigger, reset } = useForm<Values>({
+    defaultValues,
+  });
+
+  useEffect(() => {
+    reset(defaultValues);
+    if (sheet && !sheet.transcript) setIsEditing(true);
+  }, [sheet]);
+
+  const updateTranscript = async (data: Values) => {
+    if (!sheet) return;
+    await toast.promise(updatePaliSheet(sheet.id, data), {
+      error: (err) => "Error: " + err.message,
+      loading: "Loading...",
+      success: (res) => `Note "${res.title}" updated!`,
+    });
+    queryClient.invalidateQueries({ queryKey: queryKeys.listSheets });
+    setIsEditing(false);
+  };
+
+  const overwriteTranslation = async () => {
+    if (!sheet) return;
+    await toast.promise(updateTranslation(sheet.id, lines), {
+      error: (err) => "Error: " + err.message,
+      loading: "Loading...",
+      success: `Note "${sheet.title}" updated!`,
+    });
+    queryClient.invalidateQueries({ queryKey: queryKeys.listSheets });
+  };
+
+  const handleKeyDown: KeyboardEventHandler = async (event) => {
     if (event.ctrlKey && event.key === "Enter") {
       event.preventDefault(); // Prevent the default behavior of Enter
-      setIsEditing(false);
+      const isValid = await trigger();
+      if (isValid) {
+        handleSubmit(updateTranscript)();
+      }
     }
   };
 
-  const handleWordSearch: MouseEventHandler<HTMLSpanElement> = (e) => {
-    setSearch(
-      e.currentTarget.innerText.replaceAll(
-        /[\u104a\u104b\u2018\u2019",\.\?]/g,
-        ""
-      )
-    );
-  };
   return (
-    <div
-      className={clsx(
-        "flex flex-col px-2 pb-3 border border-slate-800 rounded-md",
-        className
-      )}
+    <form
+      className={clsx("px-2 pb-3", className)}
+      onSubmit={handleSubmit(updateTranscript)}
     >
-      <div className="flex justify-end py-2">
+      <div className="flex justify-between items-center py-2 gap-3">
         {isEditing ? (
-          <Button
-            className="bg-green-500 hover:bg-green-400"
-            onClick={() => {
-              setIsEditing(false);
-            }}
-          >
-            Apply <pre className="text-xs ml-1 align-super">[Ctrl+Enter]</pre>
-          </Button>
+          <Input
+            {...register("title")}
+            placeholder="Title"
+            onKeyDown={handleKeyDown}
+          />
         ) : (
-          <Button
-            variant="ghost"
-            onClick={() => {
-              setIsEditing(true);
-            }}
-          >
-            <Edit className="mr-2 h-4 w-4" /> Edit
-          </Button>
+          <p className="ms-3 text-lg">{sheet?.title}</p>
         )}
+        <div>
+          {isEditing ? (
+            <Button type="submit" className="bg-green-500 hover:bg-green-400">
+              Apply <pre className="text-xs ml-1 align-super">[Ctrl+Enter]</pre>
+            </Button>
+          ) : (
+            <>
+              {featureFlags.enableEdit && (
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsEditing(true);
+                  }}
+                >
+                  <Edit className="mr-2 h-4 w-4" /> Edit
+                </Button>
+              )}
+              <Button
+                type="button"
+                size="sm"
+                className="bg-green-500 hover:bg-green-300"
+                onClick={overwriteTranslation}
+              >
+                <Save className="mr-2 h-4 w-4" /> Save
+              </Button>
+            </>
+          )}
+        </div>
       </div>
       {isEditing ? (
-        <Textarea
-          id="pali-editor"
-          className="flex-grow text-md leading-[4rem]"
-          placeholder="Write pali script here..."
-          value={transcript}
+        <PaliTranscriptInput
+          {...register("transcript")}
           onKeyDown={handleKeyDown}
-          onChange={(e) => {
-            setTranscript(e.target.value);
-          }}
         />
       ) : (
-        <div className="py-6 px-3 text-md max-h-[70vh] overflow-auto">
-          {lines.map((line, row) => (
-            <div key={row} className="flex max-w-full flex-wrap gap-2 mb-4">
-              {line.map((word, index) => {
-                if (!word) return null;
-
-                const token = tokens.find(
-                  (t) => t.row === row && t.index === index
-                );
-
-                return (
-                  <div key={word + index} className="h-16 flex flex-col">
-                    <span
-                      className="cursor-pointer hover:text-green-400"
-                      onClick={handleWordSearch}
-                    >
-                      {word}
-                    </span>
-                    <Input
-                      className={clsx(
-                        "text-sm min-w-6 p-0 h-5 text-yellow-300 rounded-sm",
-                        token?.case
-                          ? "border-hidden hover:border-solid"
-                          : "w-20"
-                      )}
-                      size={token?.case.length ?? 5}
-                      placeholder="case..."
-                      value={token?.case ?? ""}
-                      onChange={(e) =>
-                        setTokenCase({ row, index, value: e.target.value })
-                      }
-                    />
-                    <Input
-                      size={token?.meaning.length ?? 5}
-                      className={clsx(
-                        "text-sm min-w-6 p-0 h-5 rounded-sm text-slate-500",
-                        token?.meaning
-                          ? "border-hidden hover:border-solid"
-                          : "w-20"
-                      )}
-                      placeholder="meaning..."
-                      value={token?.meaning ?? ""}
-                      onChange={(e) =>
-                        setTokenMeaning({ row, index, value: e.target.value })
-                      }
-                    />
-                  </div>
-                );
-              })}
-              <Textarea
-                className="rounded-sm"
-                value={sentences[row]}
-                onChange={(e) => setSentence(row, e.target.value)}
-              />
-            </div>
-          ))}
-        </div>
+        sheet && <PaliTokenEditor sheet={sheet} />
       )}
-    </div>
+    </form>
   );
 }
 export default PaliEditor;

@@ -1,3 +1,4 @@
+import { sql } from "drizzle-orm";
 import {
   sqliteTable,
   text,
@@ -11,6 +12,7 @@ import {
   adjectives,
   names,
 } from "unique-names-generator";
+import { createId } from "@paralleldrive/cuid2";
 
 export const countries = sqliteTable(
   "countries",
@@ -29,6 +31,13 @@ export const cities = sqliteTable("cities", {
   countryId: integer("country_id").references(() => countries.id),
 });
 
+export const users = sqliteTable("users", {
+  id: text("id")
+    .primaryKey()
+    .$defaultFn(() => createId()),
+  username: text("username").notNull().unique(),
+});
+
 export const paliSheets = sqliteTable("pali-sheets", {
   id: integer("id").primaryKey(),
   title: text("title").$defaultFn(() =>
@@ -41,10 +50,19 @@ export const paliSheets = sqliteTable("pali-sheets", {
       style: "lowerCase",
     })
   ),
+  author: text("author").references(() => users.id, { onDelete: "set null" }),
   transcript: text("transcript").default(""),
-  val: text("val", { mode: "json" }),
+  translation: text("translation", { mode: "json" }),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .default(sql`(CURRENT_TIMESTAMP)`),
+  updatedAt: integer("updated_at", { mode: "timestamp_ms" })
+    .notNull()
+    .default(sql`(CURRENT_TIMESTAMP)`),
 });
 
 export type City = typeof cities.$inferSelect; // return type when queried
-export type InsertCity = typeof cities.$inferInsert; // insert type
-export type InsertSheet = typeof paliSheets.$inferInsert; // insert type
+export type InsertCity = typeof cities.$inferInsert;
+export type Sheet = typeof paliSheets.$inferSelect;
+export type InsertSheet = typeof paliSheets.$inferInsert;
+export type User = typeof users.$inferSelect;
