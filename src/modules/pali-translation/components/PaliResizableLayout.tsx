@@ -37,7 +37,7 @@ function PaliResizableLayout({ sheetId }: Props) {
       <ResizablePanel>
         <LeftDrawer sheetId={sheetId} />
       </ResizablePanel>
-      <ResizableHandle />
+      <ResizableHandle withHandle />
       <ResizablePanel>
         <ScrollArea className="h-[calc(100vh-3.5rem)]">
           {isEditing ? (
@@ -50,7 +50,7 @@ function PaliResizableLayout({ sheetId }: Props) {
           )}
         </ScrollArea>
       </ResizablePanel>
-      <ResizableHandle />
+      <ResizableHandle withHandle />
       <ResizablePanel>
         <PaliDictionary className="h-[calc(100vh-3.5rem)] top-14 right-0" />
       </ResizablePanel>

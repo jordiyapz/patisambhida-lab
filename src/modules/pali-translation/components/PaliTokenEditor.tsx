@@ -2,7 +2,8 @@ import clsx from "clsx";
 import toast from "react-hot-toast";
 import { Edit, Save } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
-import { useEffect, type MouseEventHandler } from "react";
+import { useQueries, type QueryOptions } from "@tanstack/react-query";
+import { useEffect, useMemo, useState, type MouseEventHandler } from "react";
 
 import type { Sheet } from "@/db/schema";
 import { Input } from "@/components/ui/input";
@@ -12,10 +13,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { featureFlags } from "../config";
 import { queryKeys } from "../lib/queries";
 import queryClient from "../lib/query-client";
-import { removePunctuation } from "../lib/utils";
 import type { SheetWithAuthor } from "../lib/dto";
 import { useNewPaliStore } from "../lib/pali-store";
-import { updateTranslation } from "../lib/services";
+import dpdQueryClient from "../lib/dpd-query-client";
+import { removePunctuation, type Token } from "../lib/utils";
+import { fetchDPDict, updateTranslation } from "../lib/services";
+import BatchTranslateButton from "./BatchTranslateButton";
 
 type Props = { sheet?: Sheet | SheetWithAuthor; onEdit?(): void };
 
@@ -67,7 +70,7 @@ function PaliTokenEditor({ sheet, onEdit }: Props) {
     <div>
       <div className="flex justify-between items-center py-2 pr-3 gap-3">
         <p className="ms-3 text-lg">{sheet?.title}</p>
-        <div>
+        <div className="flex gap-1">
           {featureFlags.enableEdit && (
             <Button
               type="button"
@@ -81,6 +84,7 @@ function PaliTokenEditor({ sheet, onEdit }: Props) {
               <Edit className="mr-2 h-4 w-4" /> Edit
             </Button>
           )}
+          <BatchTranslateButton />
           <Button
             type="button"
             size="sm"
