@@ -37,7 +37,7 @@ export function velthuisToUni(velthiusInput: string): string {
     .replace(/\.r/g, "ṛ")
     .replace(/\.rr/g, "ṝ")
     .replace(/\.s/g, "ṣ")
-    .replace(/"s/g, "ś")
+    // .replace(/"s/g, "ś")
     .replace(/\u201Ds/g, "ś")
     .replace(/\.h/g, "ḥ");
 
