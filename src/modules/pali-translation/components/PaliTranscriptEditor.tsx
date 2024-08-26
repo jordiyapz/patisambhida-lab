@@ -11,7 +11,7 @@ import { queryKeys } from "../lib/queries";
 import { velthuisToUni } from "../lib/utils";
 import queryClient from "../lib/query-client";
 import type { SheetWithAuthor } from "../lib/dto";
-import { updatePaliSheet } from "../lib/services";
+import { updateTranscript } from "../lib/services";
 import PaliTranscriptInput from "./PaliTranscriptInput";
 
 type Props = {
@@ -42,9 +42,9 @@ function PaliTranscriptEditor({ className, sheet, onApplied }: Props) {
     reset(defaultValues);
   }, [sheet]);
 
-  const updateTranscript = async (data: Values) => {
+  const handleApply = async (data: Values) => {
     if (!sheet) return;
-    await toast.promise(updatePaliSheet(sheet.id, data), {
+    await toast.promise(updateTranscript(sheet.id, data), {
       error: (err) => "Error: " + err.message,
       loading: "Loading...",
       success: (res) => `Note "${res.title}" updated!`,
@@ -58,7 +58,7 @@ function PaliTranscriptEditor({ className, sheet, onApplied }: Props) {
       event.preventDefault(); // Prevent the default behavior of Enter
       const isValid = await trigger();
       if (isValid) {
-        handleSubmit(updateTranscript)();
+        handleSubmit(handleApply)();
       }
     }
   };
@@ -66,7 +66,7 @@ function PaliTranscriptEditor({ className, sheet, onApplied }: Props) {
   return (
     <form
       className={clsx("px-2 pb-3", className)}
-      onSubmit={handleSubmit(updateTranscript)}
+      onSubmit={handleSubmit(handleApply)}
     >
       <div className="flex justify-between items-center py-2 gap-3">
         <Input

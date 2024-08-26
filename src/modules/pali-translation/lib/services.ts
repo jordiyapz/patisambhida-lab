@@ -46,11 +46,19 @@ export async function updateTranslation(id: Sheet["id"], data: Line[]) {
   return updatePaliSheet(id, { translation: JSON.stringify(data) });
 }
 
+const strategies = {
+  setNull: (transcript: string) => null,
+};
+
 // TODO: implement updateTranscript
-export async function updateTranscript(id: Sheet["id"], data: string) {
+export async function updateTranscript(
+  id: Sheet["id"],
+  { title, transcript }: Partial<Sheet> & { transcript: string }
+) {
   return updatePaliSheet(id, {
-    transcript: data,
+    ...(title ? { title } : {}),
+    transcript,
     // TODO: handle token movement
-    // translation: JSON.stringify(),
+    translation: strategies.setNull(transcript),
   });
 }
