@@ -9,7 +9,7 @@ const PaliTranscriptInput = forwardRef<HTMLTextAreaElement, Props>(
       <Textarea
         ref={ref}
         id="pali-editor"
-        className="flex-grow text-md leading-[4rem]"
+        className="flex-grow text-md leading-6"
         placeholder="Write pāḷi script here..."
         rows={8}
         {...props}
