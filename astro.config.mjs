@@ -17,7 +17,7 @@ export default defineConfig({
   ],
   output: "server",
   adapter: vercelServerless({
-    maxDuration: 8,
+    maxDuration: 60,
     webAnalytics: {
       enabled: false,
     },
