@@ -77,3 +77,86 @@ export function initializeLines(transcript: string) {
     summary: "",
   }));
 }
+
+export function indexOfMax(arr: number[]) {
+  if (arr.length === 0) {
+    return -1;
+  }
+
+  var max = arr[0];
+  var maxIndex = 0;
+
+  for (var i = 1; i < arr.length; i++) {
+    if (arr[i] > max) {
+      maxIndex = i;
+      max = arr[i];
+    }
+  }
+
+  return maxIndex;
+}
+
+type WindowPeekOptions = Partial<{ windowSize: number; debug: boolean }>;
+
+/** for windowPeek */
+export function prettyPrint<T>(res: number[][], _curr: Array<T | null>) {
+  console.log(_curr.map((x) => (x === null ? "X" : x)).join(""));
+  res.forEach((row, i) => {
+    console.log([...Array(i).fill("_"), ...row].join(""));
+  });
+}
+
+export function windowPeek<T>(
+  current: T[],
+  target: T[],
+  options: WindowPeekOptions = {}
+): Array<number | null> {
+  let result = Array<number | null>(target.length).fill(null);
+
+  const { windowSize = 3, debug = false } = options;
+  const padding = (windowSize - 1) / 2;
+
+  // add padding
+  const pad = Array<null>(padding).fill(null);
+  const _target: Array<T | null> = [...pad, ...target, ...pad];
+
+  // todo: remove unused target
+  const _curr = current;
+  // const _curr = current
+  //   .map((sym) => {
+  //     if (target.includes(sym)) return sym;
+  //     return null;
+  //   })
+  //   .filter((c) => c !== null);
+
+  // todo: pick window
+  const window = [..._curr];
+
+  debug && console.debug({ _target, _curr, window });
+
+  // convolve
+  let res: Array<number[]> = [];
+  for (let i = 0; i < _target.length + 1 - windowSize; i++) {
+    const mapped = window.map((t, j) => {
+      return Number(t === _target[i + j]);
+    });
+    res.push(mapped);
+  }
+
+  debug && prettyPrint(res, _target);
+
+  const rowSum = res.map((row) => row.reduce((a, b) => a + b, 0));
+  const maxVal = Math.max(...rowSum);
+
+  res.forEach((row, r) => {
+    if (rowSum[r] === maxVal) {
+      row.forEach((mask, i) => {
+        if (mask) {
+          result[r + i - 1] = i;
+        }
+      });
+    }
+  });
+
+  return result;
+}
