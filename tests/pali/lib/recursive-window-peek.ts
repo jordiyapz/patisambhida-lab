@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { windowPeek } from "@/modules/pali-translation/lib/utils";
-import { recursiveWindowPeek } from "@/modules/pali-translation/lib/strategies";
+import { recursiveWindowPeek } from "@/modules/pali-translation/lib/recursive-window-peek";
 
 const adaptInput = (str: string) => str.split("");
 
