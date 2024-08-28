@@ -13,12 +13,14 @@ type RecursiveWindowPeekOptions<Sym> = {
   shouldPadRight?: boolean;
   /** render debug */
   debug?: boolean;
+  debugPretty?: boolean;
 };
 
 export function recursiveWindowPeek<Sym>(
   options: RecursiveWindowPeekOptions<Sym>
 ): Array<number | null> {
   const { target, indices, debug = false } = options;
+  const debugPretty = options.debugPretty ?? debug;
 
   let result = Array<number | null>(target.length).fill(null);
 
@@ -61,7 +63,7 @@ export function recursiveWindowPeek<Sym>(
     convoluted.push(mask);
   }
 
-  debug &&
+  debugPretty &&
     prettyPrint(
       convoluted,
       _target,
@@ -69,27 +71,34 @@ export function recursiveWindowPeek<Sym>(
     );
 
   const rowSum = convoluted.map((row) => row.reduce((a, b) => a + b, 0));
-  const maxVal = Math.max(...rowSum);
 
-  // TODO: this could be optimized: do per column, pick the fittest one if a column has 2 values...
-  convoluted.forEach((row, rowIdx) => {
-    if (rowSum[rowIdx] === maxVal) {
-      row.forEach((mask, maskIdx) => {
-        if (mask) {
-          const bagIndex = startIdx + maskIdx;
-          result[rowIdx - paddingSize + maskIdx] = bag[bagIndex].idx;
-          bag[bagIndex].used = true;
+  for (let i = 0; i < window.length; i++) {
+    const item = window[i];
+    let max: number = 0;
+    let maxIdx: number = -1;
+    for (let row = 0; row < convoluted.length; row++) {
+      // find the max score for this item.
+      if (convoluted[row][i]) {
+        const sum = rowSum[row];
+        if (max < sum) {
+          max = sum;
+          maxIdx = row;
         }
-      });
+      }
     }
-  });
+    debug && console.debug({ sym: item.sym, maxIdx });
+    if (maxIdx > -1) {
+      item.used = true;
+      result[maxIdx - paddingSize + i] = item.idx;
+    }
+  }
 
   debug &&
     console.debug({
+      target,
       window,
       bag,
       result,
-      target,
     });
 
   // STEP: solve unused bag.
@@ -101,13 +110,14 @@ export function recursiveWindowPeek<Sym>(
       leftTarget.push(target[i]);
     }
     const leftBag = bag.slice(0, startIdx);
-    debug && console.debug("LEFT-SIDE OF: " + target.join(""));
+    debug && console.debug("LEFT-SIDE OF: " + target.join("; "));
     const leftResult = recursiveWindowPeek({
       target: leftTarget,
       current: leftBag.map((it) => it.sym),
       indices: leftBag.map((it) => it.idx),
       windowSize,
       debug,
+      debugPretty,
     });
     leftResult.forEach((res, i) => {
       result[i] = res;
@@ -120,20 +130,20 @@ export function recursiveWindowPeek<Sym>(
       rightTarget.unshift(target[i]);
     }
     const rightBag = bag.slice(endIdx);
-    debug && console.debug("RIGHT-SIDE OF: " + target.join(""));
+    debug && console.debug("RIGHT-SIDE OF: " + target.join("; "));
     const rightResult = recursiveWindowPeek({
       target: rightTarget,
       current: rightBag.map((it) => it.sym),
       indices: rightBag.map((it) => it.idx),
       windowSize,
       debug,
+      debugPretty,
     });
     rightResult.reverse().forEach((res, i) => {
       result[result.length - i - 1] = res;
     });
+    debug && console.debug({ combinedResult: result });
   }
-
-  debug && console.debug({ result });
 
   return result;
 }
