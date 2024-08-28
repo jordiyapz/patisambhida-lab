@@ -2,22 +2,20 @@ import clsx from "clsx";
 import toast from "react-hot-toast";
 import { Edit, Save } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
-import { useQueries, type QueryOptions } from "@tanstack/react-query";
-import { useEffect, useMemo, useState, type MouseEventHandler } from "react";
+import { useFlags } from "flagsmith/react";
+import { useEffect, type MouseEventHandler } from "react";
 
 import type { Sheet } from "@/db/schema";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
-import { featureFlags } from "../config";
 import { queryKeys } from "../lib/queries";
 import queryClient from "../lib/query-client";
 import type { SheetWithAuthor } from "../lib/dto";
 import { useNewPaliStore } from "../lib/pali-store";
-import dpdQueryClient from "../lib/dpd-query-client";
-import { removePunctuation, type Token } from "../lib/utils";
-import { fetchDPDict, updateTranslation } from "../lib/services";
+import { removePunctuation } from "../lib/utils";
+import { updateTranslation } from "../lib/services";
 import BatchTranslateButton from "./BatchTranslateButton";
 
 type Props = { sheet?: Sheet | SheetWithAuthor; onEdit?(): void };
@@ -42,6 +40,8 @@ function PaliTokenEditor({ sheet, onEdit }: Props) {
       s.setTokenMeaning,
     ])
   );
+  const flags = useFlags(["pali/transcript_editable"]);
+  const enableEdit = flags["pali/transcript_editable"].enabled;
 
   useEffect(() => {
     if (sheet) {
@@ -71,7 +71,7 @@ function PaliTokenEditor({ sheet, onEdit }: Props) {
       <div className="flex justify-between items-center py-2 pr-3 gap-3">
         <p className="ms-3 text-lg">{sheet?.title}</p>
         <div className="flex gap-1">
-          {featureFlags.enableEdit && (
+          {enableEdit && (
             <Button
               type="button"
               size="sm"

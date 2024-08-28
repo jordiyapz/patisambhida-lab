@@ -44,6 +44,7 @@
     "cmdk": "1.0.0",
     "dayjs": "^1.11.13",
     "drizzle-orm": "^0.33.0",
+    "flagsmith": "^4.0.3",
     "immer": "^10.1.1",
     "lucide-react": "^0.426.0",
     "node-html-parser": "^6.1.13",

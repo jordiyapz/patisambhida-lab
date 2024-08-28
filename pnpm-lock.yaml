@@ -95,6 +95,9 @@ dependencies:
   drizzle-orm:
     specifier: ^0.33.0
     version: 0.33.0(@libsql/client@0.9.0)(@types/react@18.3.3)(react@18.3.1)
+  flagsmith:
+    specifier: ^4.0.3
+    version: 4.0.3
   immer:
     specifier: ^10.1.1
     version: 10.1.1
@@ -6031,6 +6034,10 @@ packages:
     dependencies:
       micromatch: 4.0.7
       pkg-dir: 4.2.0
+    dev: false
+
+  /flagsmith@4.0.3:
+    resolution: {integrity: sha512-F2lI84yCwxP9RZMcqDgpj9cjWfgQ6YQLS1/bXNp4iltZz6K8lr4zECjBbqqZSUBpxpKBOxfPFX6XGdDurAKOuA==}
     dev: false
 
   /flattie@1.1.1:
