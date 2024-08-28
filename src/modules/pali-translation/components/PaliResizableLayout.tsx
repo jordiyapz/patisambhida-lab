@@ -1,4 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
+import flagsmith from "flagsmith";
+import { FlagsmithProvider } from "flagsmith/react";
 
 import {
   ResizablePanelGroup,
@@ -46,7 +48,12 @@ function PaliResizableLayout({ sheetId }: Props) {
               onApplied={() => setEditing(false)}
             />
           ) : (
-            <PaliTokenEditor sheet={sheet} onEdit={() => setEditing(true)} />
+            <FlagsmithProvider
+              options={{ environmentID: "X8t4dP7Vh5PbytNZZVumSp" }}
+              flagsmith={flagsmith}
+            >
+              <PaliTokenEditor sheet={sheet} onEdit={() => setEditing(true)} />
+            </FlagsmithProvider>
           )}
         </ScrollArea>
       </ResizablePanel>

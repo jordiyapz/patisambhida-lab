@@ -1,6 +1,7 @@
 import type { InsertSheet, Sheet } from "@/db/schema";
 import type { SheetWithAuthor } from "@/modules/pali-translation/lib/dto";
 import { jsonHeaders, type Line } from "./utils";
+import { setNullStrategy } from "./strategies";
 
 export const fetchDPDict = async (search: string) => {
   const url = `https://corsmirror.onrender.com/v1/cors?url=${encodeURIComponent(
@@ -47,7 +48,7 @@ export async function updateTranslation(id: Sheet["id"], data: Line[]) {
 }
 
 const strategies = {
-  setNull: (transcript: string) => null,
+  setNull: setNullStrategy,
 };
 
 // TODO: implement updateTranscript
@@ -58,7 +59,7 @@ export async function updateTranscript(
   return updatePaliSheet(id, {
     ...(title ? { title } : {}),
     transcript,
-    // TODO: handle token movement
-    translation: strategies.setNull(transcript),
+    // TODO: pass current lines as second argument
+    translation: strategies.setNull(transcript, []),
   });
 }
