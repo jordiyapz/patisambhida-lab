@@ -1,12 +1,12 @@
-import clsx from "clsx";
 import toast from "react-hot-toast";
 import { Edit, Save } from "lucide-react";
 import { useShallow } from "zustand/react/shallow";
 import { useFlags } from "flagsmith/react";
-import { useEffect, type MouseEventHandler } from "react";
+import { useEffect } from "react";
+import { useMediaQuery } from "react-responsive";
 
 import type { Sheet } from "@/db/schema";
-import { Input } from "@/components/ui/input";
+import Tooltip from "@/components/ui/Tooltip";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 
@@ -14,34 +14,25 @@ import { queryKeys } from "../lib/queries";
 import queryClient from "../lib/query-client";
 import type { SheetWithAuthor } from "../lib/dto";
 import { useNewPaliStore } from "../lib/pali-store";
-import { removePunctuation } from "../lib/utils";
 import { updateTranslation } from "../lib/services";
 import BatchTranslateButton from "./BatchTranslateButton";
+import TokenCard from "./TokenCard";
 
 type Props = { sheet?: Sheet | SheetWithAuthor; onEdit?(): void };
 
 function PaliTokenEditor({ sheet, onEdit }: Props) {
-  const [
-    setSearch,
-    lines,
-    initializeLines,
-    setLines,
-    setLineSummary,
-    setTokenCase,
-    setTokenMeaning,
-  ] = useNewPaliStore(
+  const [lines, initializeLines, setLines, setLineSummary] = useNewPaliStore(
     useShallow((s) => [
-      s.setSearch,
       s.lines,
       s.initializeLines,
       s.setLines,
       s.setLineSummary,
-      s.setTokenCase,
-      s.setTokenMeaning,
     ])
   );
   const flags = useFlags(["pali/transcript_editable"]);
   const enableEdit = flags["pali/transcript_editable"].enabled;
+
+  const isMobile = useMediaQuery({ maxWidth: 767 });
 
   useEffect(() => {
     if (sheet) {
@@ -60,10 +51,6 @@ function PaliTokenEditor({ sheet, onEdit }: Props) {
       success: `Note "${sheet.title}" updated!`,
     });
     queryClient.invalidateQueries({ queryKey: queryKeys.listSheets });
-  };
-
-  const handleWordSearch: MouseEventHandler<HTMLSpanElement> = (e) => {
-    setSearch(removePunctuation(e.currentTarget.innerText));
   };
 
   return (
@@ -88,52 +75,21 @@ function PaliTokenEditor({ sheet, onEdit }: Props) {
           <Button
             type="button"
             size="sm"
-            className="bg-green-500 hover:bg-green-300"
+            className="group relative bg-green-500 hover:bg-green-300"
             onClick={overwriteTranslation}
           >
-            <Save className="mr-2 h-4 w-4" /> Save
+            <Save className="h-4 w-4" />
+            {!isMobile && <span className="ml-1">Save</span>}
+            {isMobile && <Tooltip title="Save" pos="bottom" />}
           </Button>
         </div>
       </div>
-      <div className="mt-2 pb-6 px-3 text-md overflow-auto">
+      <div className="pt-2 pb-6 px-3 text-md overflow-auto">
         {lines.map((line, row) => (
           <div key={row} className="flex max-w-full flex-wrap gap-2 mb-4">
-            {line.tokens.map((token, index) => {
-              return (
-                <div key={index} className="h-16 flex flex-col">
-                  <span
-                    className="cursor-pointer hover:text-green-400"
-                    onClick={handleWordSearch}
-                  >
-                    {token.symbol}
-                  </span>
-                  <Input
-                    className={clsx(
-                      "text-sm min-w-6 p-0 h-5 text-yellow-300 rounded-sm",
-                      token?.case ? "border-hidden hover:border-solid" : "w-20"
-                    )}
-                    size={token?.case.length ?? 5}
-                    placeholder="case..."
-                    value={token?.case ?? ""}
-                    onChange={(e) => setTokenCase([row, index], e.target.value)}
-                  />
-                  <Input
-                    size={token?.meaning.length ?? 5}
-                    className={clsx(
-                      "text-sm min-w-6 p-0 h-5 rounded-sm text-slate-500",
-                      token?.meaning
-                        ? "border-hidden hover:border-solid"
-                        : "w-20"
-                    )}
-                    placeholder="meaning..."
-                    value={token?.meaning ?? ""}
-                    onChange={(e) =>
-                      setTokenMeaning([row, index], e.target.value)
-                    }
-                  />
-                </div>
-              );
-            })}
+            {line.tokens.map((token, index) => (
+              <TokenCard key={index} token={token} row={row} col={index} />
+            ))}
             <Textarea
               className="rounded-sm"
               value={line.summary}

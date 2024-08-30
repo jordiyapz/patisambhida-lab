@@ -28,12 +28,20 @@ describe("Recursive window strategy", () => {
       "In Lorem enim velit, deserunt officia veniam. tempor reprehenderit irure fugiat.";
     const newTranscript =
       "In Lorem enim velit, officia veniam. tempor reprehenderit irure fugiat.";
+
     const originalLines = initializeLines(originalTranscript);
     const newLines = initializeLines(newTranscript);
-
     const transformed = recursiveWindowStrategy(newTranscript, originalLines);
     expect(transformed).toEqual(newLines);
   });
   // TODO: should handle multiple lines
-  test.todo("should handle multiple lines");
+  test.todo("should handle multiple lines", () => {
+    const originalTranscript = "One two line";
+    const newTranscript = "One, two\nNew line!";
+
+    const originalLines = initializeLines(originalTranscript);
+    const newLines = initializeLines(newTranscript);
+    const transformed = recursiveWindowStrategy(newTranscript, originalLines);
+    expect(transformed).toEqual(newLines);
+  });
 });
