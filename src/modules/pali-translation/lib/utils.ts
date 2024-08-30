@@ -55,6 +55,7 @@ export const jsonHeaders = {
 
 export interface Token {
   symbol: string;
+  alt?: string;
   case: string;
   meaning: string;
 }

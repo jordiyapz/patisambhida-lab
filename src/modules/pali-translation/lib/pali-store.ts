@@ -128,6 +128,7 @@ export interface LinesSlice {
   setLineSummary: (row: number, value: string) => void;
   setTokenCase: (location: XY, value: string) => void;
   setTokenMeaning: (location: XY, value: string) => void;
+  setTokenAlt: (location: XY, value?: string) => void;
 }
 
 type ImmerStateCreator<T> = StateCreator<
@@ -158,6 +159,10 @@ const createLinesSlice: ImmerStateCreator<LinesSlice> = (set) => ({
   setTokenMeaning: ([row, col], value) =>
     set((s) => {
       s.lines[row].tokens[col].meaning = value;
+    }),
+  setTokenAlt: ([row, col], value) =>
+    set((s) => {
+      s.lines[row].tokens[col].alt = value;
     }),
 });
 
