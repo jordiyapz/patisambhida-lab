@@ -9,10 +9,16 @@ import { fetchDPDict } from "../lib/services";
 import { useNewPaliStore } from "../lib/pali-store";
 import dpdQueryClient from "../lib/dpd-query-client";
 import { removePunctuation, type Token } from "../lib/utils";
+import { useMediaQuery } from "react-responsive";
+import clsx from "clsx";
+import { CloudDownloadIcon, DatabaseIcon, DownloadIcon } from "lucide-react";
+import Tooltip from "@/components/ui/Tooltip";
+import Loader from "@/components/ui/Loader";
 
 function BatchTranslateButton() {
   const lines = useNewPaliStore(useShallow((s) => s.lines));
   const [shouldBatch, setShouldBatch] = useState(false);
+  const isMobile = useMediaQuery({ maxWidth: 767 });
 
   const uniqueSymbols = useMemo(() => {
     const tokens = lines
@@ -41,18 +47,28 @@ function BatchTranslateButton() {
     [translationsQueries]
   );
 
+  const defaultText = "Fetch all translations";
+  const buttonText = status.includes("pending")
+    ? "Fetching..."
+    : status.includes("success")
+    ? "Fetched"
+    : defaultText;
+
   return (
     <Button
       size="sm"
+      className={clsx(isMobile && "w-10")}
       variant="outline"
       disabled={shouldBatch}
       onClick={() => setShouldBatch(true)}
     >
-      {status.includes("pending")
-        ? "Fetching..."
-        : status.includes("success")
-        ? "Fetched"
-        : "Fetch all translations"}
+      {status.includes("pending") ? (
+        <Loader size="sm" />
+      ) : (
+        <CloudDownloadIcon className="h-4 w-4" />
+      )}
+      {!isMobile && <span className="ml-1">{buttonText}</span>}
+      {isMobile && <Tooltip pos="bottom" title={defaultText} />}
     </Button>
   );
 }
