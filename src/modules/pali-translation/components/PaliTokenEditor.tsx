@@ -17,6 +17,16 @@ import { useNewPaliStore } from "../lib/pali-store";
 import { updateTranslation } from "../lib/services";
 import BatchTranslateButton from "./BatchTranslateButton";
 import TokenCard from "./TokenCard";
+import * as Popover from "@radix-ui/react-popover";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { DialogTrigger } from "@radix-ui/react-dialog";
 
 type Props = { sheet?: Sheet | SheetWithAuthor; onEdit?(): void };
 
@@ -88,7 +98,12 @@ function PaliTokenEditor({ sheet, onEdit }: Props) {
         {lines.map((line, row) => (
           <div key={row} className="flex max-w-full flex-wrap gap-2 mb-4">
             {line.tokens.map((token, index) => (
-              <TokenCard key={index} token={token} row={row} col={index} />
+              <TokenCard
+                key={`${row}-${index}`}
+                token={token}
+                row={row}
+                col={index}
+              />
             ))}
             <Textarea
               className="rounded-sm"

@@ -44,7 +44,7 @@ const { brand = "Paṭisambhidā LAB" } = Astro.props;
   >
     <div class="container py-2 flex align-middle justify-between">
       <div class="flex items-center">
-        <a class="font-sans font-extrabold text-xl align-baseline" href="/">
+        <a class="font-sans font-extrabold text-md align-baseline md:text-xl" href="/">
           {brand}
         </a>
         {features.moduleSelection && <ComboboxDemo client:load />}
