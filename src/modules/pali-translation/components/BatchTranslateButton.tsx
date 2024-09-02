@@ -5,15 +5,15 @@ import { useQueries, type QueryOptions } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 
 import { queryKeys } from "../lib/queries";
-import { fetchDPDict } from "../lib/services";
+import { searchDPDict } from "../lib/services";
 import { useNewPaliStore } from "../lib/pali-store";
-import dpdQueryClient from "../lib/dpd-query-client";
 import { removePunctuation, type Token } from "../lib/utils";
 import { useMediaQuery } from "react-responsive";
 import clsx from "clsx";
 import { CloudDownloadIcon, DatabaseIcon, DownloadIcon } from "lucide-react";
 import Tooltip from "@/components/ui/Tooltip";
 import Loader from "@/components/ui/Loader";
+import queryClient from "../lib/query-client";
 
 function BatchTranslateButton() {
   const lines = useNewPaliStore(useShallow((s) => s.lines));
@@ -33,13 +33,13 @@ function BatchTranslateButton() {
         ? uniqueSymbols.map((symbol) => {
             return {
               queryKey: queryKeys.dictByQ(symbol),
-              queryFn: () => fetchDPDict(symbol),
+              queryFn: () => searchDPDict(symbol),
               retry: 10,
             } satisfies QueryOptions;
           })
         : [],
     },
-    dpdQueryClient
+    queryClient
   );
 
   const status = useMemo(

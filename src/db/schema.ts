@@ -61,6 +61,15 @@ export const paliSheets = sqliteTable("pali-sheets", {
     .default(sql`(CURRENT_TIMESTAMP)`),
 });
 
+export const dpdSearches = sqliteTable("dpd-searches", {
+  search: text("search").primaryKey(),
+  summaryHtml: text("summary_html"),
+  dpdHtml: text("dpd_html"),
+  createdAt: integer("created_at", { mode: "timestamp_ms" })
+    .notNull()
+    .default(sql`(CURRENT_TIMESTAMP)`),
+});
+
 export type City = typeof cities.$inferSelect; // return type when queried
 export type InsertCity = typeof cities.$inferInsert;
 export type Sheet = typeof paliSheets.$inferSelect;

@@ -1,14 +1,24 @@
 import type { InsertSheet, Sheet } from "@/db/schema";
-import type { SheetWithAuthor } from "@/modules/pali-translation/lib/dto";
+import type {
+  DPDResult,
+  SheetWithAuthor,
+} from "@/modules/pali-translation/lib/dto";
 import { jsonHeaders, type Line } from "./utils";
 import { setNullStrategy } from "./strategies";
 
+/** @deprecated Slow. Use `searchDPDict` instead. */
 export const fetchDPDict = async (search: string) => {
   const url = `https://corsmirror.onrender.com/v1/cors?url=${encodeURIComponent(
     `https://www.dpdict.net/gd?search=${encodeURI(search)}`
   )}`;
   const dom = await fetch(url).then((res) => res.text());
   return dom;
+};
+
+export const searchDPDict = async (search: string) => {
+  const url = `/api/pali/dpd?q=${search}`;
+  const result = (await fetch(url).then((res) => res.json())) as DPDResult;
+  return result;
 };
 
 export async function fetchPaliSheets(baseUrl: URL | string = "") {
@@ -19,6 +29,7 @@ export async function fetchPaliSheets(baseUrl: URL | string = "") {
     ).then((res) => res.json());
     return sheets;
   } catch (error) {
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     console.error((error as any).message);
     return [];
   }
@@ -36,7 +47,7 @@ export async function updatePaliSheet(
   id: Sheet["id"],
   data: Partial<Omit<Sheet, "id">>
 ) {
-  return fetch("/api/pali/sheets/" + id, {
+  return fetch(`/api/pali/sheets/${id}`, {
     method: "PATCH",
     headers: jsonHeaders,
     body: JSON.stringify(data),

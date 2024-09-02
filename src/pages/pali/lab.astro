@@ -1,0 +1,22 @@
+---
+import { Separator } from "@/components/ui/separator";
+import Layout from "@/layouts/Layout.astro";
+import type { DPDResult } from "@/modules/pali-translation/lib/dto";
+
+const search = "kāmarāgo";
+
+const urlString = "/api/pali/dpd";
+const url = new URL(urlString, Astro.url);
+url.searchParams.set("q", search);
+
+const body = (await fetch(url).then((res) => res.json())) as DPDResult;
+// const css = await fetch("https://www.dpdict.net/static/dpd.css");
+---
+
+<Layout>
+  <h2 class="text-lg">DPD</h2>
+  <div set:html={body.dpd_html} />
+  <Separator />
+  <h2 class="text-lg">Summary</h2>
+  <div set:html={body.summary_html} />
+</Layout>

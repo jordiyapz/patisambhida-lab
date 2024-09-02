@@ -120,14 +120,18 @@
   border-top: 1px solid darkmagenta;
   margin-top: 8px;
   padding-top: 8px;
-  font-size: small
+  font-size: small;
 }
 
 #dpd-result .link {
   font-size: small;
-  color: magenta
+  color: magenta;
 }
 
 #dpd-result .link:hover {
   text-decoration: underline;
+}
+
+#dpd-result .button-box {
+  display: none;
 }

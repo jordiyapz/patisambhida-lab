@@ -1,9 +1,9 @@
 import clsx from "clsx";
-import parse from "node-html-parser";
 import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 
+import { Separator } from "@/components/ui/separator";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,8 +11,8 @@ import { useNewPaliStore } from "@/modules/pali-translation/lib/pali-store";
 
 import { queryKeys } from "../lib/queries";
 import { velthuisToUni } from "../lib/utils";
-import { fetchDPDict } from "../lib/services";
-import dpdQueryClient from "../lib/dpd-query-client";
+import { searchDPDict } from "../lib/services";
+import queryClient from "../lib/query-client";
 
 type Props = {
   className: string;
@@ -29,20 +29,20 @@ function PaliDictionary({ ...props }: Props) {
   const { status, data, error, isLoading, refetch } = useQuery(
     {
       queryKey: queryKeys.dictByQ(search),
-      queryFn: () => fetchDPDict(search),
+      queryFn: () => searchDPDict(search),
       enabled: search !== "",
       retry: 10,
     },
-    dpdQueryClient
+    queryClient
   );
 
-  useEffect(() => {
-    if (data === "Internal Server Error") refetch();
-  }, [data, refetch]);
+  // useEffect(() => {
+  //   if (data === "Internal Server Error") refetch();
+  // }, [data, refetch]);
 
-  const dom = data
-    ? parse(data, { blockTextElements: { style: false } })
-    : null;
+  // const dom = data
+  //   ? parse(data, { blockTextElements: { style: false } })
+  //   : null;
 
   return (
     <div {...props} className={clsx("flex flex-col gap-2", props.className)}>
@@ -73,18 +73,37 @@ function PaliDictionary({ ...props }: Props) {
         {/* <Separator className="px-2"/> */}
         {status === "pending" ? (
           <div className="mt-5 text-center">
-            {isLoading ? "Loading..." : "No data"}
+            {isLoading ? "Loading..." : "☝🏼 Search something..."}
           </div>
         ) : status === "error" ? (
           <pre>{error.message}</pre>
         ) : (
+          // <div
+          //   id="dpd-result"
+          //   className="p-4 pt-2 flex flex-col justify-stretch overflow-y-auto max-h-[70dvh]"
+          //   // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+          //   dangerouslySetInnerHTML={{
+          //     __html: dom?.innerHTML ?? "Failed to load data",
+          //   }}
+          // />
           <div
             id="dpd-result"
             className="p-4 pt-2 flex flex-col justify-stretch overflow-y-auto max-h-[70dvh]"
-            dangerouslySetInnerHTML={{
-              __html: dom?.innerHTML ?? "Failed to load data",
-            }}
-          ></div>
+          >
+            <div
+              className="summary" // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+              dangerouslySetInnerHTML={{
+                __html: data?.summary_html ?? "Failed to load data",
+              }}
+            />
+            <Separator />
+            <div
+              className="dpd-results" // biome-ignore lint/security/noDangerouslySetInnerHtml: <explanation>
+              dangerouslySetInnerHTML={{
+                __html: data?.dpd_html ?? "Failed to load data",
+              }}
+            />
+          </div>
         )}
       </div>
     </div>

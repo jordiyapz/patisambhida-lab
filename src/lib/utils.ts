@@ -10,3 +10,7 @@ export function capitalize(str: string): string {
   if (sp.length > 1) return sp.map(capitalize).join(" ");
   return str.slice(0, 1).toUpperCase() + str.slice(1);
 }
+
+export function json(obj: unknown = null, init?: ResponseInit) {
+  return new Response(JSON.stringify(obj), init);
+}

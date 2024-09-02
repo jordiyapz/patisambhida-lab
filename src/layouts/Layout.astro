@@ -5,11 +5,11 @@ import "@/styles/globals.css";
 import Header from "@/components/Header.astro";
 
 interface Props {
-  title: string;
+  title?: string;
   brand?: string;
 }
 
-const { title, brand } = Astro.props;
+const { title = "LAB", brand } = Astro.props;
 ---
 
 <!doctype html>
